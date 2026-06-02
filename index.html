@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Facebook X Video Page</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { margin:0; font-family: Arial,sans-serif; background:#f0f2f5; }
+/* Header */
+.header { display:flex; justify-content:space-between; align-items:center; padding:5px 15px; background:#1877f2; color:white; position:sticky; top:0; z-index:1000; }
+.header-left{display:flex;align-items:center;gap:10px;}
+.header-left img{height:40px;}
+.search-box{display:flex;align-items:center;background:white;border-radius:20px;padding:5px 10px;color:gray;}
+.search-box input{border:none;outline:none;padding:5px;width:150px;}
+.search-box i{margin-right:5px;}
+.header-middle{display:flex;justify-content:center;align-items:center;gap:20px;}
+.icon-btn{width:50px;height:50px;border-radius:50%;display:flex;justify-content:center;align-items:center;cursor:pointer;color:white;font-size:20px;transition:background 0.3s;}
+.icon-btn:hover{background:rgba(255,255,255,0.2);}
+.header-right{display:flex;align-items:center;gap:10px;}
+/* Sidebar */
+.sidebar {
+    width: 450px;
+    background: white;
+    padding: 10px;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    bottom: 0;
+    overflow-y: auto;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.sidebar-item:hover {
+    background: #f0f2f5;
+}
+
+.sidebar-item img {
+    width: 30px;
+    height: 30px;
+}
+/* Main Content: Centralized & smaller width */
+.main-content {
+    margin-left: 480px;        /* sidebar অনুযায়ী */
+    margin-right: 260px;        /* ডান দিকে auto */
+    padding: 10px;
+    max-width: 600px;          /* পোস্টের প্রস্থ কমানো */
+}
+
+/* Post Container */
+.post-container {
+    background: white;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    width: 100%;               /* main-content অনুযায়ী */
+}
+
+/* Post Header */
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name-time {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.follow-button {
+    border: 1px solid #1877f2;
+    color: #1877f2;
+    background: white;
+    padding: 3px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.follow-button:hover {
+    background: #e7f3ff;
+}
+
+/* Post Text */
+.post-text {
+    margin: 10px 0;
+}
+
+/* Post Images & Videos: Responsive */
+.post-image-link img,
+.post-image-link video {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 10px;
+    object-fit: contain;
+    max-height: 70vh;
+}
+
+/* Reactions */
+.reactions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.reaction-options a {
+    margin-right: 10px;
+    color: black;
+    text-decoration: none;
+}
+
+/* Post Footer */
+.post-footer {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+    border-top: 1px solid #ccc;
+    padding-top: 5px;
+}
+
+.post-footer a{text-decoration:none;color:black;}
+.load-more{display:flex;justify-content:center;margin:20px 0;}
+.load-more button{background:#1877f2;color:white;border:none;padding:10px 20px;border-radius:5px;cursor:pointer;}
+.like-btn{cursor:pointer;background:none;border:none;color:black;font-weight:normal;}
+.like-btn.liked{font-weight:bold;color:blue;}
+}
+
+/* Load More Button */
+.load-more {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.load-more button {
+    background: #1877f2;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}/* Responsive */
+@media(max-width:768px){.sidebar{display:none;}.main-content{margin-left:0;padding:10px;}.header-middle{gap:10px;}}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" alt="FB Logo">
+            <div class="search-box">
+                <i class="fa fa-search"></i>
+                <input type="text" placeholder="Search Facebook">
+            </div>
+        </div>
+
+        <div class="header-middle">
+            <div class="icon-btn" onclick="window.open('YOUR_HOME_LINK_HERE','_blank')" title="Home"><i class="fa fa-home"></i></div>
+            <div class="icon-btn icon-page"onclick="window.open('YOUR_HOME_LINK_HERE','_blank')" title="https://www.google.com"><i class="fa fa-flag"></i></div>
+            <div class="icon-btn icon-dashboard"onclick="window.open('YOUR_HOME_LINK_HERE','_blank')" title="https://www.google.com"><i class="fa fa-chart-line"></i></div>
+            <div class="icon-btn icon-ads"onclick="window.open('YOUR_HOME_LINK_HERE','_blank')" title="Ad Center"><i class="fa fa-bullhorn"></i></div>
+            <div class="icon-btn icon-reels"onclick="window.open('YOUR_HOME_LINK_HERE','_blank')" title="Reels"><i class="fa fa-play-circle"></i></div>
+        </div>
+
+        <div class="header-right">
+            <div class="icon-btn icon-menu"onclick="window.open('YOUR_HOME_LINK_HERE','_blank')" title="Menu"><i class="fa fa-bars"></i></div>
+            <div class="icon-btn icon-messenger" onclick="window.open('YOUR_HOME_LINK_HERE','_blank')"title="Messenger"><i class="fa fa-comment-dots"></i></div>
+            <div class="icon-btn icon-notification"onclick="window.open('YOUR_HOME_LINK_HERE','_blank')" title="Notifications"><i class="fa fa-bell"></i></div>
+            <div class="icon-btn icon-profile"onclick="window.open('YOUR_HOME_LINK_HERE','_blank')" title="Profile"><i class="fa fa-user"></i></div>
+        </div>
+    </div>
+
+ <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-item" onclick="window.open('YOUR_MY_PAGE_LINK_HERE','_blank')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png"> My Page
+        </div>
+        <div class="sidebar-item fb-color" onclick="window.open('YOUR_DASHBOARD_LINK_HERE','_blank')"><i class="fa fa-chart-line" style="color:#1877f2;"></i> Professional Dashboard</div>
+        <div class="sidebar-item fb-color" onclick="window.open('YOUR_ADS_LINK_HERE','_blank')"><i class="fa fa-bullhorn" style="color:#f02849;"></i> Ad Center</div>
+        <div class="sidebar-item fb-color" onclick="window.open('YOUR_GROUPS_LINK_HERE','_blank')"><i class="fa fa-flag" style="color:#42b72a;"></i> Groups</div>
+        <div class="sidebar-item fb-color" onclick="window.open('YOUR_REELS_LINK_HERE','_blank')"><i class="fa fa-play-circle" style="color:#f5b300;"></i> Reels</div>
+        <div class="sidebar-item fb-color" onclick="window.open('YOUR_MEMORIES_LINK_HERE','_blank')"><i class="fa fa-clock" style="color:#0078ff;"></i> Memories</div>
+        <div class="sidebar-item fb-color" onclick="window.open('YOUR_SAFETY_LINK_HERE','_blank')"><i class="fa fa-shield-alt" style="color:#f02849;"></i> Safety</div>
+        <div class="sidebar-item fb-color" onclick="window.open('YOUR_SEE_MORE_LINK_HERE','_blank')"><i class="fa fa-ellipsis-h" style="color:#1877f2;"></i> See More</div>
+    </div>
+</div>
+
+<div class="main-content" id="postContainer"></div>
+
+<div class="load-more">
+    <button id="seeMoreBtn">See More</button>
+</div>
+
+<script>
+// Example posts data (যতগুলো পোস্ট প্রয়োজন)
+const posts = [
+    {
+        profile:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBCVceaatKn2CnM8qYoIV49d-NdzyxfYWdnQ&s",
+        name:"আলমা খান",
+        text:"নতুন ভাইরাল ভিডিও | সম্পুর্ন ভিডিও দেখতে ভিডিওর উপর ক্লিক করুন",
+        image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEpg6hEi6yQ7e79hyphenhyphenAj5u1aFfZPoEsrjTXm9ERLPia_Ic2d4r2TVIIOvJeuQBJNx_M8mIQSMAb7BwvrhT6ckJxBJ8NirBN_Z5hF9jSJS6pOMIfDEHPr9Qpw-AJN-PSKP-vjVDdERNhXfU5d2gvGlX5D8HtT_6cnb-3bMcGrO23bgfTwK__lm9jX9fAfIor/w259-h340/2eeee7e6-97d3-40d5-b6c4-c2a58df7bd21-ezgif.com-video-to-gif-converter.gif",
+        likes:580,
+        comments:210,
+        views:"7.5K",
+        links:{
+            profile:"https://example.com/alma-profile",
+            content:"https://example.com/alma-content",
+            comment:"https://example.com/alma-comments"
+        }
+    },
+    {
+        profile:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBCVceaatKn2CnM8qYoIV49d-NdzyxfYWdnQ&s",
+        name:"রফিকুল ইসলাম",
+        text:"মজার ভিডিও! দেখুন এবং শেয়ার করুন।",
+        image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEpg6hEi6q3r4y_sample.gif",
+        likes:320,
+        comments:50,
+        views:"3.1K",
+        links:{
+            profile:"https://example.com/rofikul-profile",
+            content:"https://example.com/rofikul-content",
+            comment:"https://example.com/rofikul-comments"
+        }
+    },
+{
+        profile:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBCVceaatKn2CnM8qYoIV49d-NdzyxfYWdnQ&s",
+        name:"আলমা খান",
+        text:"নতুন ভাইরাল ভিডিও | সম্পুর্ন ভিডিও দেখতে ভিডিওর উপর ক্লিক করুন",
+        image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEpg6hEi6yQ7e79hyphenhyphenAj5u1aFfZPoEsrjTXm9ERLPia_Ic2d4r2TVIIOvJeuQBJNx_M8mIQSMAb7BwvrhT6ckJxBJ8NirBN_Z5hF9jSJS6pOMIfDEHPr9Qpw-AJN-PSKP-vjVDdERNhXfU5d2gvGlX5D8HtT_6cnb-3bMcGrO23bgfTwK__lm9jX9fAfIor/w259-h340/2eeee7e6-97d3-40d5-b6c4-c2a58df7bd21-ezgif.com-video-to-gif-converter.gif",
+        likes:580,
+        comments:210,
+        views:"7.5K",
+        links:{
+            profile:"https://example.com/alma-profile",
+            content:"https://example.com/alma-content",
+            comment:"https://example.com/alma-comments"
+        }
+    },
+    {
+        profile:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBCVceaatKn2CnM8qYoIV49d-NdzyxfYWdnQ&s",
+        name:"রফিকুল ইসলাম",
+        text:"মজার ভিডিও! দেখুন এবং শেয়ার করুন।",
+        image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEpg6hEi6q3r4y_sample.gif",
+        likes:320,
+        comments:50,
+        views:"3.1K",
+        links:{
+            profile:"https://example.com/rofikul-profile",
+            content:"https://example.com/rofikul-content",
+            comment:"https://example.com/rofikul-comments"
+        }
+    },
+{
+        profile:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBCVceaatKn2CnM8qYoIV49d-NdzyxfYWdnQ&s",
+        name:"আলমা খান",
+        text:"নতুন ভাইরাল ভিডিও | সম্পুর্ন ভিডিও দেখতে ভিডিওর উপর ক্লিক করুন",
+        image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEpg6hEi6yQ7e79hyphenhyphenAj5u1aFfZPoEsrjTXm9ERLPia_Ic2d4r2TVIIOvJeuQBJNx_M8mIQSMAb7BwvrhT6ckJxBJ8NirBN_Z5hF9jSJS6pOMIfDEHPr9Qpw-AJN-PSKP-vjVDdERNhXfU5d2gvGlX5D8HtT_6cnb-3bMcGrO23bgfTwK__lm9jX9fAfIor/w259-h340/2eeee7e6-97d3-40d5-b6c4-c2a58df7bd21-ezgif.com-video-to-gif-converter.gif",
+        likes:580,
+        comments:210,
+        views:"7.5K",
+        links:{
+            profile:"https://example.com/alma-profile",
+            content:"https://example.com/alma-content",
+            comment:"https://example.com/alma-comments"
+        }
+    },
+    {
+        profile:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBCVceaatKn2CnM8qYoIV49d-NdzyxfYWdnQ&s",
+        name:"রফিকুল ইসলাম",
+        text:"মজার ভিডিও! দেখুন এবং শেয়ার করুন।",
+        image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEpg6hEi6q3r4y_sample.gif",
+        likes:320,
+        comments:50,
+        views:"3.1K",
+        links:{
+            profile:"https://example.com/rofikul-profile",
+            content:"https://example.com/rofikul-content",
+            comment:"https://example.com/rofikul-comments"
+        }
+    },
+{
+        profile:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBCVceaatKn2CnM8qYoIV49d-NdzyxfYWdnQ&s",
+        name:"আলমা খান",
+        text:"নতুন ভাইরাল ভিডিও | সম্পুর্ন ভিডিও দেখতে ভিডিওর উপর ক্লিক করুন",
+        image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEpg6hEi6yQ7e79hyphenhyphenAj5u1aFfZPoEsrjTXm9ERLPia_Ic2d4r2TVIIOvJeuQBJNx_M8mIQSMAb7BwvrhT6ckJxBJ8NirBN_Z5hF9jSJS6pOMIfDEHPr9Qpw-AJN-PSKP-vjVDdERNhXfU5d2gvGlX5D8HtT_6cnb-3bMcGrO23bgfTwK__lm9jX9fAfIor/w259-h340/2eeee7e6-97d3-40d5-b6c4-c2a58df7bd21-ezgif.com-video-to-gif-converter.gif",
+        likes:580,
+        comments:210,
+        views:"7.5K",
+        links:{
+            profile:"https://example.com/alma-profile",
+            content:"https://example.com/alma-content",
+            comment:"https://example.com/alma-comments"
+        }
+    },
+    {
+        profile:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBCVceaatKn2CnM8qYoIV49d-NdzyxfYWdnQ&s",
+        name:"রফিকুল ইসলাম",
+        text:"মজার ভিডিও! দেখুন এবং শেয়ার করুন।",
+        image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEpg6hEi6q3r4y_sample.gif",
+        likes:320,
+        comments:50,
+        views:"3.1K",
+        links:{
+            profile:"https://example.com/rofikul-profile",
+            content:"https://example.com/rofikul-content",
+            comment:"https://example.com/rofikul-comments"
+        }
+    },
+{
+        profile:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBCVceaatKn2CnM8qYoIV49d-NdzyxfYWdnQ&s",
+        name:"আলমা খান",
+        text:"নতুন ভাইরাল ভিডিও | সম্পুর্ন ভিডিও দেখতে ভিডিওর উপর ক্লিক করুন",
+        image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEpg6hEi6yQ7e79hyphenhyphenAj5u1aFfZPoEsrjTXm9ERLPia_Ic2d4r2TVIIOvJeuQBJNx_M8mIQSMAb7BwvrhT6ckJxBJ8NirBN_Z5hF9jSJS6pOMIfDEHPr9Qpw-AJN-PSKP-vjVDdERNhXfU5d2gvGlX5D8HtT_6cnb-3bMcGrO23bgfTwK__lm9jX9fAfIor/w259-h340/2eeee7e6-97d3-40d5-b6c4-c2a58df7bd21-ezgif.com-video-to-gif-converter.gif",
+        likes:580,
+        comments:210,
+        views:"7.5K",
+        links:{
+            profile:"https://example.com/alma-profile",
+            content:"https://example.com/alma-content",
+            comment:"https://example.com/alma-comments"
+        }
+    },
+    {
+        profile:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBCVceaatKn2CnM8qYoIV49d-NdzyxfYWdnQ&s",
+        name:"রফিকুল ইসলাম",
+        text:"মজার ভিডিও! দেখুন এবং শেয়ার করুন।",
+        image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEpg6hEi6q3r4y_sample.gif",
+        likes:320,
+        comments:50,
+        views:"3.1K",
+        links:{
+            profile:"https://example.com/rofikul-profile",
+            content:"https://example.com/rofikul-content",
+            comment:"https://example.com/rofikul-comments"
+        }
+    },
+{
+        profile:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBCVceaatKn2CnM8qYoIV49d-NdzyxfYWdnQ&s",
+        name:"আলমা খান",
+        text:"নতুন ভাইরাল ভিডিও | সম্পুর্ন ভিডিও দেখতে ভিডিওর উপর ক্লিক করুন",
+        image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEpg6hEi6yQ7e79hyphenhyphenAj5u1aFfZPoEsrjTXm9ERLPia_Ic2d4r2TVIIOvJeuQBJNx_M8mIQSMAb7BwvrhT6ckJxBJ8NirBN_Z5hF9jSJS6pOMIfDEHPr9Qpw-AJN-PSKP-vjVDdERNhXfU5d2gvGlX5D8HtT_6cnb-3bMcGrO23bgfTwK__lm9jX9fAfIor/w259-h340/2eeee7e6-97d3-40d5-b6c4-c2a58df7bd21-ezgif.com-video-to-gif-converter.gif",
+        likes:580,
+        comments:210,
+        views:"7.5K",
+        links:{
+            profile:"https://example.com/alma-profile",
+            content:"https://example.com/alma-content",
+            comment:"https://example.com/alma-comments"
+        }
+    },
+    {
+        profile:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBCVceaatKn2CnM8qYoIV49d-NdzyxfYWdnQ&s",
+        name:"রফিকুল ইসলাম",
+        text:"মজার ভিডিও! দেখুন এবং শেয়ার করুন।",
+        image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEpg6hEi6q3r4y_sample.gif",
+        likes:320,
+        comments:50,
+        views:"3.1K",
+        links:{
+            profile:"https://example.com/rofikul-profile",
+            content:"https://example.com/rofikul-content",
+            comment:"https://example.com/rofikul-comments"
+        }
+    },
+{
+        profile:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBCVceaatKn2CnM8qYoIV49d-NdzyxfYWdnQ&s",
+        name:"আলমা খান",
+        text:"নতুন ভাইরাল ভিডিও | সম্পুর্ন ভিডিও দেখতে ভিডিওর উপর ক্লিক করুন",
+        image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEpg6hEi6yQ7e79hyphenhyphenAj5u1aFfZPoEsrjTXm9ERLPia_Ic2d4r2TVIIOvJeuQBJNx_M8mIQSMAb7BwvrhT6ckJxBJ8NirBN_Z5hF9jSJS6pOMIfDEHPr9Qpw-AJN-PSKP-vjVDdERNhXfU5d2gvGlX5D8HtT_6cnb-3bMcGrO23bgfTwK__lm9jX9fAfIor/w259-h340/2eeee7e6-97d3-40d5-b6c4-c2a58df7bd21-ezgif.com-video-to-gif-converter.gif",
+        likes:580,
+        comments:210,
+        views:"7.5K",
+        links:{
+            profile:"https://example.com/alma-profile",
+            content:"https://example.com/alma-content",
+            comment:"https://example.com/alma-comments"
+        }
+    },
+    {
+        profile:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBCVceaatKn2CnM8qYoIV49d-NdzyxfYWdnQ&s",
+        name:"রফিকুল ইসলাম",
+        text:"মজার ভিডিও! দেখুন এবং শেয়ার করুন।",
+        image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEpg6hEi6q3r4y_sample.gif",
+        likes:320,
+        comments:50,
+        views:"3.1K",
+        links:{
+            profile:"https://example.com/rofikul-profile",
+            content:"https://example.com/rofikul-content",
+            comment:"https://example.com/rofikul-comments"
+        }
+    },
+{
+        profile:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBCVceaatKn2CnM8qYoIV49d-NdzyxfYWdnQ&s",
+        name:"আলমা খান",
+        text:"নতুন ভাইরাল ভিডিও | সম্পুর্ন ভিডিও দেখতে ভিডিওর উপর ক্লিক করুন",
+        image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEpg6hEi6yQ7e79hyphenhyphenAj5u1aFfZPoEsrjTXm9ERLPia_Ic2d4r2TVIIOvJeuQBJNx_M8mIQSMAb7BwvrhT6ckJxBJ8NirBN_Z5hF9jSJS6pOMIfDEHPr9Qpw-AJN-PSKP-vjVDdERNhXfU5d2gvGlX5D8HtT_6cnb-3bMcGrO23bgfTwK__lm9jX9fAfIor/w259-h340/2eeee7e6-97d3-40d5-b6c4-c2a58df7bd21-ezgif.com-video-to-gif-converter.gif",
+        likes:580,
+        comments:210,
+        views:"7.5K",
+        links:{
+            profile:"https://example.com/alma-profile",
+            content:"https://example.com/alma-content",
+            comment:"https://example.com/alma-comments"
+        }
+    },
+    {
+        profile:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBCVceaatKn2CnM8qYoIV49d-NdzyxfYWdnQ&s",
+        name:"রফিকুল ইসলাম",
+        text:"মজার ভিডিও! দেখুন এবং শেয়ার করুন।",
+        image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEpg6hEi6q3r4y_sample.gif",
+        likes:320,
+        comments:50,
+        views:"3.1K",
+        links:{
+            profile:"https://example.com/rofikul-profile",
+            content:"https://example.com/rofikul-content",
+            comment:"https://example.com/rofikul-comments"
+        }
+    },
+{
+        profile:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBCVceaatKn2CnM8qYoIV49d-NdzyxfYWdnQ&s",
+        name:"আলমা খান",
+        text:"নতুন ভাইরাল ভিডিও | সম্পুর্ন ভিডিও দেখতে ভিডিওর উপর ক্লিক করুন",
+        image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEpg6hEi6yQ7e79hyphenhyphenAj5u1aFfZPoEsrjTXm9ERLPia_Ic2d4r2TVIIOvJeuQBJNx_M8mIQSMAb7BwvrhT6ckJxBJ8NirBN_Z5hF9jSJS6pOMIfDEHPr9Qpw-AJN-PSKP-vjVDdERNhXfU5d2gvGlX5D8HtT_6cnb-3bMcGrO23bgfTwK__lm9jX9fAfIor/w259-h340/2eeee7e6-97d3-40d5-b6c4-c2a58df7bd21-ezgif.com-video-to-gif-converter.gif",
+        likes:580,
+        comments:210,
+        views:"7.5K",
+        links:{
+            profile:"https://example.com/alma-profile",
+            content:"https://example.com/alma-content",
+            comment:"https://example.com/alma-comments"
+        }
+    },
+    {
+        profile:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBCVceaatKn2CnM8qYoIV49d-NdzyxfYWdnQ&s",
+        name:"রফিকুল ইসলাম",
+        text:"মজার ভিডিও! দেখুন এবং শেয়ার করুন।",
+        image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEpg6hEi6q3r4y_sample.gif",
+        likes:320,
+        comments:50,
+        views:"3.1K",
+        links:{
+            profile:"https://example.com/rofikul-profile",
+            content:"https://example.com/rofikul-content",
+            comment:"https://example.com/rofikul-comments"
+        }
+    },
+{
+        profile:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBCVceaatKn2CnM8qYoIV49d-NdzyxfYWdnQ&s",
+        name:"আলমা খান",
+        text:"নতুন ভাইরাল ভিডিও | সম্পুর্ন ভিডিও দেখতে ভিডিওর উপর ক্লিক করুন",
+        image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEpg6hEi6yQ7e79hyphenhyphenAj5u1aFfZPoEsrjTXm9ERLPia_Ic2d4r2TVIIOvJeuQBJNx_M8mIQSMAb7BwvrhT6ckJxBJ8NirBN_Z5hF9jSJS6pOMIfDEHPr9Qpw-AJN-PSKP-vjVDdERNhXfU5d2gvGlX5D8HtT_6cnb-3bMcGrO23bgfTwK__lm9jX9fAfIor/w259-h340/2eeee7e6-97d3-40d5-b6c4-c2a58df7bd21-ezgif.com-video-to-gif-converter.gif",
+        likes:580,
+        comments:210,
+        views:"7.5K",
+        links:{
+            profile:"https://example.com/alma-profile",
+            content:"https://example.com/alma-content",
+            comment:"https://example.com/alma-comments"
+        }
+    },
+    {
+        profile:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBCVceaatKn2CnM8qYoIV49d-NdzyxfYWdnQ&s",
+        name:"রফিকুল ইসলাম",
+        text:"মজার ভিডিও! দেখুন এবং শেয়ার করুন।",
+        image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEpg6hEi6q3r4y_sample.gif",
+        likes:320,
+        comments:50,
+        views:"3.1K",
+        links:{
+            profile:"https://example.com/rofikul-profile",
+            content:"https://example.com/rofikul-content",
+            comment:"https://example.com/rofikul-comments"
+        }
+    },
+{
+        profile:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBCVceaatKn2CnM8qYoIV49d-NdzyxfYWdnQ&s",
+        name:"আলমা খান",
+        text:"নতুন ভাইরাল ভিডিও | সম্পুর্ন ভিডিও দেখতে ভিডিওর উপর ক্লিক করুন",
+        image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEpg6hEi6yQ7e79hyphenhyphenAj5u1aFfZPoEsrjTXm9ERLPia_Ic2d4r2TVIIOvJeuQBJNx_M8mIQSMAb7BwvrhT6ckJxBJ8NirBN_Z5hF9jSJS6pOMIfDEHPr9Qpw-AJN-PSKP-vjVDdERNhXfU5d2gvGlX5D8HtT_6cnb-3bMcGrO23bgfTwK__lm9jX9fAfIor/w259-h340/2eeee7e6-97d3-40d5-b6c4-c2a58df7bd21-ezgif.com-video-to-gif-converter.gif",
+        likes:580,
+        comments:210,
+        views:"7.5K",
+        links:{
+            profile:"https://example.com/alma-profile",
+            content:"https://example.com/alma-content",
+            comment:"https://example.com/alma-comments"
+        }
+    },
+    {
+        profile:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBCVceaatKn2CnM8qYoIV49d-NdzyxfYWdnQ&s",
+        name:"রফিকুল ইসলাম",
+        text:"মজার ভিডিও! দেখুন এবং শেয়ার করুন।",
+        image:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjEpg6hEi6q3r4y_sample.gif",
+        likes:320,
+        comments:50,
+        views:"3.1K",
+        links:{
+            profile:"https://example.com/rofikul-profile",
+            content:"https://example.com/rofikul-content",
+            comment:"https://example.com/rofikul-comments"
+        }
+    },
+
+    // আরও পোস্ট এখানে যোগ করো, কমপক্ষে 15টি পোস্ট রাখো
+];
+
+const siteRedirect = "https://www.google.com"; // এখানে তোমার সাইট লিংক বসাও
+let currentIndex = 0;
+const initialLoad = 15;
+const loadCount = 5;
+let redirectDone = false;
+
+// পোস্ট রেন্ডার ফাংশন
+function renderPost(p){
+    const postHTML = document.createElement('div');
+    postHTML.classList.add('post-container');
+    postHTML.innerHTML = `
+        <div class="post-header">
+            <img class="profile-pic" src="${p.profile}" alt="Profile">
+            <div class="user-info">
+                <div class="user-name-time">
+                    <p class="username" style="cursor:pointer;color:blue;">${p.name}</p>
+                    <button class="follow-button">Follow</button>
+                </div>
+            </div>
+        </div>
+        <p class="post-text">${p.text}</p>
+        <a class="post-image-link" href="${p.links.content}" target="_blank">
+            <img src="${p.image}" alt="Post Image">
+        </a>
+        <div class="reactions">
+            <div class="reaction-countlove"><span class="like-display" style="color:black;cursor:pointer;">${p.likes}</span></div>
+            <div class="reaction-options"><a href="${p.links.comment}" target="_blank">${p.comments} Comment</a></div>
+            <span class="user-name">${p.views} views</span>
+        </div>
+        <div class="post-footer">
+            <button class="like-btn">Like</button>
+            <div><a href="${p.links.comment}" target="_blank"><i class="fa-regular fa-comment"></i> Comment</a></div>
+            <div><a href="https://www.facebook.com/sharer/sharer.php?u=${p.links.content}" target="_blank"><i class="fa fa-share"></i> Share</a></div>
+        </div>
+    `;
+
+    // username ক্লিক → প্রোফাইল
+    postHTML.querySelector('.username').addEventListener('click',()=>{window.location.href=p.links.profile;});
+
+    // follow button
+    const followBtn = postHTML.querySelector('.follow-button');
+    followBtn.addEventListener('click',()=>{followBtn.textContent = followBtn.textContent==="Follow"?"Followed":"Follow";});
+
+    // like button
+    const likeBtn = postHTML.querySelector('.like-btn');
+    const likeDisplay = postHTML.querySelector('.like-display');
+    let liked=false;
+    likeBtn.addEventListener('click',()=>{
+        if(!liked){liked=true; likeBtn.textContent="Liked"; likeBtn.classList.add('liked'); likeDisplay.textContent=parseInt(likeDisplay.textContent)+1;}
+        else{liked=false; likeBtn.textContent="Like"; likeBtn.classList.remove('liked'); likeDisplay.textContent=parseInt(likeDisplay.textContent)-1;}
+    });
+
+    // image click → content
+    postHTML.querySelector('.post-image-link').addEventListener('click',(e)=>{e.preventDefault();window.location.href=p.links.content;});
+
+    document.getElementById('postContainer').appendChild(postHTML);
+}
+
+// প্রথমে ১০টি পোস্ট লোড
+for(let i=0;i<initialLoad && i<posts.length;i++){
+    renderPost(posts[i]);
+    currentIndex++;
+}
+
+// See More ক্লিক ইভেন্ট
+document.getElementById('seeMoreBtn').addEventListener('click', ()=>{
+    if(!redirectDone){
+        // প্রথম ক্লিকে redirect
+        window.location.href = siteRedirect;
+        redirectDone = true;
+    } else {
+        // পরের ক্লিকে ৫টি পোস্ট লোড
+        for(let i=currentIndex;i<currentIndex+loadCount && i<posts.length;i++){
+            renderPost(posts[i]);
+            currentIndex++;
+        }
+        // সব পোস্ট শেষ হলে See More লুকানো
+        if(currentIndex>=posts.length){
+            document.getElementById('seeMoreBtn').style.display='none';
+        }
+    }
+});
+</script>
+</body>
+</html>
