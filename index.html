@@ -1,105 +1,1479 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Facebook Feed Pro V10</title>
-<style>
-:root{--fb:#1877F2;--bg:#f0f2f5}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:var(--bg)}
-a{text-decoration:none}
-header{position:sticky;top:0;background:#fff;padding:10px;display:grid;grid-template-columns:260px 1fr 220px;box-shadow:0 1px 4px rgba(0,0,0,.12);z-index:999}
-.left,.center,.right{display:flex;align-items:center}.left{gap:10px}.center{justify-content:center;gap:10px}.right{justify-content:flex-end;gap:10px}
-.logo{font-size:42px;color:#1877F2;font-weight:bold}
-.search{padding:10px;border:none;border-radius:999px;background:#eef2f5;width:180px}
-.icon,.item,.actions button{transition:.25s}
-.icon{padding:8px;border-radius:8px;color:#444}
-.icon:hover,.item:hover{background:#eef2f5}
-.dropdown{position:relative}.menu{display:none;position:absolute;top:100%;left:0;background:#fff;min-width:220px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.15)}
-.dropdown:hover .menu{display:block}.menu a,.item{display:block;padding:12px;color:#111}
-.layout{max-width:1200px;margin:auto;display:grid;grid-template-columns:250px 700px;gap:20px;padding:20px;justify-content:center}
-.sidebar,.post{background:#fff;border-radius:16px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-.sidebar{padding:16px}.feed{display:flex;flex-direction:column;gap:16px}
-.post{padding:16px}.top{display:flex;justify-content:space-between;align-items:center}
-.user{display:flex;gap:10px;align-items:center}
-.avatar{width:50px;height:50px;border-radius:50%}
-.profile-name{color:#050505!important;text-decoration:none!important;font-weight:600}
-.post-text{margin:10px 0;color:#050505}
-.post-link{color:#1877F2!important;font-weight:600}
-.media{width:100%;border-radius:12px;margin-top:10px}
-.follow{background:var(--fb);color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
-.follow.active{background:#42b72a}
-.stats{display:flex;justify-content:space-between;padding:10px 0;color:#666}
-.actions{display:flex;gap:10px}
-.actions button{flex:1;padding:10px;border:none;border-radius:8px;cursor:pointer}
-.likeBtn.active{background:#1877F2;color:#fff}
-.commentBtn:hover{background:#eee}.shareBtn:hover{background:#42b72a;color:#fff}
-.load{text-align:center;padding:20px}
-#loadMore{background:#1877F2;color:#fff;border:none;padding:12px 20px;border-radius:10px;cursor:pointer}
-@media(max-width:768px){header{grid-template-columns:1fr}.layout{grid-template-columns:1fr}.sidebar{display:none}.center,.right{justify-content:center;flex-wrap:wrap}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Feed Dashboard</title>
+    <style>
+        /* CSS RESET & VARIABLES */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        :root {
+            --fb-blue: #1877f2;
+            --fb-bg: #f0f2f5;
+            --fb-card-bg: #ffffff;
+            --fb-text-primary: #050505;
+            --fb-text-secondary: #65676b;
+            --fb-hover: #e4e6eb;
+            --fb-border: #ced0d4;
+            --fb-blue-hover: #166fe5;
+            --fb-blue-light: #e7f3ff;
+            --header-height: 56px;
+            --transition-speed: 0.2s;
+        }
+
+        body {
+            background-color: var(--fb-bg);
+            color: var(--fb-text-primary);
+            overflow-y: scroll;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            outline: none;
+        }
+
+        /* UTILITIES */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        /* HEADER SECTION */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            background-color: var(--fb-card-bg);
+            border-bottom: 2px solid var(--fb-blue);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 16px;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* LEFT HEADER */
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            max-width: 360px;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background-color: var(--fb-blue);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            transition: background-color var(--transition-speed);
+        }
+
+        .logo:hover {
+            background-color: var(--fb-blue-hover);
+        }
+
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 240px;
+        }
+
+        .search-input {
+            width: 100%;
+            height: 40px;
+            background-color: var(--fb-bg);
+            border: none;
+            border-radius: 50px;
+            padding: 0 16px 0 36px;
+            font-size: 14px;
+            color: var(--fb-text-primary);
+            transition: background-color var(--transition-speed);
+        }
+
+        .search-input:focus {
+            outline: none;
+            background-color: var(--fb-card-bg);
+            box-shadow: inset 0 0 0 2px var(--fb-blue);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--fb-text-secondary);
+            pointer-events: none;
+        }
+
+        /* CENTER HEADER */
+        .header-center {
+            display: flex;
+            justify-content: center;
+            flex: 1;
+            height: 100%;
+            max-width: 600px;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            position: relative;
+            color: var(--fb-text-secondary);
+            border-bottom: 3px solid transparent;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+        }
+
+        .nav-item:hover {
+            background-color: var(--fb-hover);
+            border-radius: 8px;
+            margin: 4px 0;
+            height: calc(100% - 8px);
+        }
+
+        .nav-item.active {
+            color: var(--fb-blue);
+            border-bottom: 3px solid var(--fb-blue);
+            border-radius: 0;
+            margin: 0;
+            height: 100%;
+        }
+
+        .nav-item svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        /* RIGHT HEADER */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            justify-content: flex-end;
+            max-width: 360px;
+        }
+
+        .right-icon-btn {
+            width: 40px;
+            height: 40px;
+            background-color: var(--fb-hover);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--fb-text-primary);
+            position: relative;
+            transition: filter var(--transition-speed);
+        }
+
+        .right-icon-btn:hover {
+            filter: brightness(0.9);
+        }
+
+        .right-icon-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* TOOLTIP SYSTEM */
+        [data-tooltip]::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%) scale(0.9);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--transition-speed), transform var(--transition-speed);
+            transform-origin: top center;
+            z-index: 1100;
+        }
+
+        [data-tooltip]:hover::after {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
+        /* MAIN LAYOUT */
+        .main-container {
+            display: grid;
+            grid-template-columns: 360px 1fr 360px;
+            margin-top: var(--header-height);
+            min-height: calc(100vh - var(--header-height));
+            position: relative;
+        }
+
+        /* SIDEBARS common */
+        .sidebar {
+            position: fixed;
+            top: var(--header-height);
+            bottom: 0;
+            width: 360px;
+            overflow-y: auto;
+            padding: 16px 8px;
+        }
+
+        .sidebar-left {
+            left: 0;
+        }
+
+        .sidebar-right {
+            right: 0;
+        }
+
+        /* SIDEBAR ITEMS */
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 8px;
+            border-radius: 8px;
+            color: var(--fb-text-primary);
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color var(--transition-speed);
+            margin-bottom: 2px;
+        }
+
+        .sidebar-item:hover {
+            background-color: var(--fb-hover);
+        }
+
+        .sidebar-item-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: transparent;
+            color: var(--fb-blue);
+            flex-shrink: 0;
+        }
+
+        .sidebar-item-icon img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .sidebar-item-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .sidebar-separator {
+            height: 1px;
+            background-color: var(--fb-border);
+            margin: 8px 8px;
+        }
+
+        .sidebar-heading {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--fb-text-secondary);
+            padding: 8px;
+        }
+
+        /* MIDDLE FEED AREA */
+        .feed-container {
+            grid-column: 2;
+            max-width: 680px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 16px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* POST CREATOR CARD */
+        .creator-card {
+            background-color: var(--fb-card-bg);
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            padding: 12px 16px 10px 16px;
+        }
+
+        .creator-top {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--fb-border);
+        }
+
+        .creator-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .creator-trigger {
+            flex: 1;
+            background-color: var(--fb-bg);
+            border-radius: 20px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            padding-left: 16px;
+            color: var(--fb-text-secondary);
+            font-size: 15px;
+            text-align: left;
+            transition: background-color var(--transition-speed);
+        }
+
+        .creator-trigger:hover {
+            background-color: var(--fb-border);
+        }
+
+        .creator-bottom {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 8px;
+        }
+
+        .creator-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: 40px;
+            border-radius: 8px;
+            color: var(--fb-text-secondary);
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color var(--transition-speed);
+        }
+
+        .creator-btn:hover {
+            background-color: var(--fb-hover);
+        }
+
+        .creator-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* POST CARD */
+        .post-card {
+            background-color: var(--fb-card-bg);
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            padding: 12px 0 0 0;
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px 12px 16px;
+        }
+
+        .post-header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .post-meta {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .post-author {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--fb-text-primary);
+        }
+
+        .post-author:hover {
+            text-decoration: none;
+        }
+
+        .post-time {
+            font-size: 12px;
+            color: var(--fb-text-secondary);
+        }
+
+        .follow-btn {
+            color: var(--fb-blue);
+            font-size: 14px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: background-color var(--transition-speed);
+        }
+
+        .follow-btn:hover {
+            background-color: var(--fb-blue-light);
+        }
+
+        .follow-btn.followed {
+            color: var(--fb-text-secondary);
+            background-color: var(--fb-hover);
+        }
+
+        .post-text {
+            font-size: 15px;
+            line-height: 1.4;
+            padding: 0 16px 12px 16px;
+            color: var(--fb-text-primary);
+        }
+
+        .post-text-link {
+            color: var(--fb-blue);
+            font-weight: 500;
+        }
+
+        .post-text-link:hover {
+            text-underline-position: under;
+        }
+
+        .post-image-container {
+            width: 100%;
+            background-color: var(--fb-bg);
+            max-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .post-image {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            max-height: 500px;
+        }
+
+        /* COUNTERS */
+        .post-counters {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 16px;
+            font-size: 13px;
+            color: var(--fb-text-secondary);
+            border-bottom: 1px solid var(--fb-border);
+        }
+
+        .counter-left, .counter-right {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* POST ACTIONS */
+        .post-actions {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 16px;
+            border-bottom: 1px solid var(--fb-border);
+        }
+
+        .action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: 38px;
+            border-radius: 4px;
+            color: var(--fb-text-secondary);
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color var(--transition-speed);
+        }
+
+        .action-btn:hover {
+            background-color: var(--fb-hover);
+        }
+
+        .action-btn.active {
+            color: var(--fb-blue);
+        }
+
+        .action-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* LOAD MORE SYSTEM */
+        .load-more-container {
+            display: flex;
+            justify-content: center;
+            padding: 16px 0 32px 0;
+        }
+
+        .load-more-btn {
+            background-color: var(--fb-blue);
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 10px 32px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: background-color var(--transition-speed), transform var(--transition-speed);
+        }
+
+        .load-more-btn:hover {
+            background-color: var(--fb-blue-hover);
+            transform: translateY(-1px);
+        }
+
+        /* MODAL WINDOW SYSTEM */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--transition-speed) ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background-color: var(--fb-card-bg);
+            border-radius: 8px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: transform var(--transition-speed) ease;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border-bottom: 1px solid var(--fb-border);
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--fb-text-primary);
+            text-align: center;
+            flex: 1;
+        }
+
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            background-color: var(--fb-hover);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--fb-text-secondary);
+            transition: filter var(--transition-speed);
+        }
+
+        .modal-close:hover {
+            filter: brightness(0.9);
+        }
+
+        .modal-body {
+            padding: 16px;
+            font-size: 15px;
+            line-height: 1.5;
+            color: var(--fb-text-primary);
+        }
+
+        .modal-body a {
+            color: var(--fb-blue);
+            font-weight: 600;
+        }
+
+        .modal-body a:hover {
+            text-underline-position: under;
+        }
+
+        /* SPONSOR & CONTACTS RIGHT SIDEBAR */
+        .right-section {
+            padding: 8px;
+        }
+
+        /* RESPONSIVE DESIGN BREAKPOINTS */
+        @media (max-width: 1260px) {
+            .main-container {
+                grid-template-columns: 280px 1fr;
+            }
+            .sidebar-left {
+                width: 280px;
+            }
+            .sidebar-right {
+                display: none;
+            }
+        }
+
+        @media (max-width: 1000px) {
+            .header-center {
+                display: none;
+            }
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar-left {
+                display: none;
+            }
+            .feed-container {
+                grid-column: 1;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .header-right {
+                display: none;
+            }
+            .search-container {
+                max-width: 160px;
+            }
+            .creator-bottom {
+                display: none;
+            }
+            .creator-card {
+                padding-bottom: 12px;
+            }
+        }
+    </style>
 </head>
 <body>
-<header>
-<div class="left"><div class="logo">f</div><input id="search" class="search" placeholder="Search profile"></div>
-<div class="center">
-<div class="dropdown"><a class="icon" href="#">🏠</a><div class="menu"><a href="https://example.com">Home</a></div></div>
-<div class="dropdown"><a class="icon" href="#">📊</a><div class="menu"><a href="https://example.com">Dashboard</a></div></div>
-<div class="dropdown"><a class="icon" href="#">📢</a><div class="menu"><a href="https://example.com">Ad Center</a></div></div>
-<div class="dropdown"><a class="icon" href="#">👥</a><div class="menu"><a href="https://example.com">Groups</a></div></div>
-<div class="dropdown"><a class="icon" href="#">🎬</a><div class="menu"><a href="https://example.com">Reels</a></div></div>
-</div>
-<div class="right"><a class="icon" href="https://example.com">☰</a><a class="icon" href="https://example.com">💬</a><a class="icon" href="https://example.com">🔔</a><a class="icon" href="https://example.com">👤</a></div>
-</header>
 
-<div class="layout">
-<aside class="sidebar">
-<a class="item" href="https://x.com">👤 My Page</a>
-<a class="item" href="https://example.com">📊 Professional Dashboard</a>
-<a class="item" href="https://example.com">📢 Ad Center</a>
-<a class="item" href="https://example.com">👥 Groups</a>
-<a class="item" href="https://example.com">🎬 Reels</a>
-<a class="item" href="https://example.com">🕒 Memories</a>
-<a class="item" href="https://example.com">🛡️ Safety</a>
-<a class="item" href="https://x.com">➕ See More</a>
-</aside>
-<section id="feed" class="feed"></section>
-</div>
+    <header class="header">
+        <div class="header-left">
+            <a id="logo-anchor" class="logo" target="_blank" href="#">f</a>
+            <div class="search-container">
+                <span class="search-icon">
+                    <svg fill="currentColor" viewBox="0 0 16 16" width="16" height="16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
+                </span>
+                <input type="text" id="feed-search-input" class="search-input" placeholder="Search by name..." aria-label="Search posts by author profile name">
+            </div>
+        </div>
 
-<div class="load"><button id="loadMore">Load More</button></div>
+        <nav class="header-center" id="center-nav-bar" aria-label="Primary Platform Navigation"></nav>
 
-<script>
-const posts=[
-{name:"Profile One",profileImage:"https://picsum.photos/60?1",profileUrl:"https://x.com",postImage:"https://picsum.photos/700/420?1",postUrl:"https://x.com",postText:"This is the first sample post.",postLinkText:"https://x.com",commentLink:"https://x.com",likes:897.76,comments:"697.84k",shares:"321.25k"},
+        <div class="header-right" id="right-utility-icons"></div>
+    </header>
 
-{name:"Profile Two",profileImage:"https://picsum.photos/60?2",profileUrl:"https://example.com/profile2",postImage:"https://picsum.photos/700/420?2",postUrl:"https://example.com/post2",postText:"This is the second sample post.",postLinkText:"Download Now",commentLink:"https://example.com/comment2",likes:743.55,comments:"582.31k",shares:"211.44k"},
+    <main class="main-container">
+        <aside class="sidebar sidebar-left" aria-label="Sidebar Navigation Menu">
+            <div id="sidebar-profile-node"></div>
+            <div id="sidebar-menu-node"></div>
+            <div class="sidebar-separator"></div>
+            <div class="sidebar-heading">Your Shortcuts</div>
+            <div id="sidebar-shortcuts-node"></div>
+        </aside>
 
-{name:"Profile Three",profileImage:"https://picsum.photos/60?3",profileUrl:"https://example.com/profile3",postImage:"https://picsum.photos/700/420?3",postUrl:"https://example.com/post3",postText:"This is the third sample post.",postLinkText:"Read More",commentLink:"https://example.com/comment3",likes:921.63,comments:"804.11k",shares:"447.93k"}
-];
-const feed=document.getElementById('feed');let loaded=0;
-function render(n){
-posts.slice(loaded,loaded+n).forEach(post=>{
-const el=document.createElement('article');
-el.className='post';el.dataset.name=post.name.toLowerCase();
-el.innerHTML=`<div class="top"><div class="user"><a href="${post.profileUrl}" target="_blank"><img class="avatar" src="${post.profileImage}"></a><a class="profile-name" href="${post.profileUrl}" target="_blank">${post.name}</a></div><button class="follow">Follow</button></div>
-<p class="post-text">${post.postText}</p>
-<a class="post-link" href="${post.postUrl}" target="_blank">${post.postLinkText}</a>
-<a href="${post.postUrl}" target="_blank"><img class="media" src="${post.postImage}" loading="lazy"></a>
-<div class="stats"><span class="likes">👍 ${post.likes.toFixed(2)}k</span><span>💬 ${post.comments}</span><span>↗ ${post.shares}</span></div>
-<div class="actions"><button class="likeBtn">👍 Like</button><button class="commentBtn">💬 Comment</button><button class="shareBtn">↗ Share</button></div>`;
-let liked=false;
-el.querySelector('.likeBtn').onclick=function(){liked=!liked;this.classList.toggle('active');this.textContent=liked?'👍 Liked':'👍 Like';post.likes+=liked?1:-1;el.querySelector('.likes').textContent='👍 '+post.likes.toFixed(2)+'k';};
-el.querySelector('.follow').onclick=function(){this.classList.toggle('active');this.textContent=this.classList.contains('active')?'Followed':'Follow';};
-el.querySelector('.commentBtn').onclick=()=>window.open(post.commentLink,'_blank');
-el.querySelector('.shareBtn').onclick=()=>window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(post.postUrl),'_blank');
-feed.appendChild(el);
-});
-loaded+=n;if(loaded>=posts.length)document.getElementById('loadMore').style.display='none';
-}
-render(10);
-document.getElementById('loadMore').onclick=()=>render(10);
-document.getElementById('search').oninput=e=>{const q=e.target.value.toLowerCase();document.querySelectorAll('.post').forEach(p=>p.style.display=p.dataset.name.includes(q)?'block':'none')}
-</script>
+        <section class="feed-container" aria-label="Social Feed Stream">
+            <div class="creator-card">
+                <div class="creator-top">
+                    <img id="creator-avatar-img" src="" alt="Active User Profile" class="creator-avatar">
+                    <button id="creator-modal-trigger" class="creator-trigger"></button>
+                </div>
+                <div class="creator-bottom" id="creator-action-strip"></div>
+            </div>
+
+            <div id="dynamic-post-stream"></div>
+
+            <div class="load-more-container">
+                <button id="load-more-action-btn" class="load-more-btn">Load More</button>
+            </div>
+        </section>
+
+        <aside class="sidebar sidebar-right" aria-label="Contextual Contacts and Sponsored Feed">
+            <div class="right-section">
+                <div class="sidebar-heading">Sponsored</div>
+                <a href="https://example.com" target="_blank" class="sidebar-item">
+                    <div class="sidebar-item-icon">
+                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    </div>
+                    <div>Meta Enterprise Architecture Solutions</div>
+                </a>
+                <div class="sidebar-separator"></div>
+                <div class="sidebar-heading">Contacts</div>
+                <div id="contacts-listing-node"></div>
+            </div>
+        </aside>
+    </main>
+
+    <div id="global-modal-overlay" class="modal-overlay" role="dialog" aria-modal="true">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 class="modal-title" id="global-modal-title">Modal Notification</h2>
+                <button id="global-modal-close" class="modal-close" aria-label="Close modal window">
+                    <svg fill="currentColor" viewBox="0 0 16 16" width="20" height="20"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>
+                </button>
+            </div>
+            <div class="modal-body" id="global-modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        /* CONFIGURATION AND SETUP OBJECT ARRAYS DEFINITION */
+        const APP_SETTINGS = {
+            logoLink: "https://www.facebook.com",
+            userProfile: {
+                name: "Alex Mercer",
+                image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80",
+                link: "https://example.com/profile/alexmercer"
+            },
+            creatorPopupText: "Visit our official website for updates.",
+            creatorPopupLinkText: "Open Corporate Portal",
+            creatorPopupLink: "https://example.com/corporate-portal",
+            commentText: "Join our community today.",
+            commentLinkText: "Open Community",
+            commentLink: "https://example.com/community-join"
+        };
+
+        const CENTER_NAVIGATION = [
+            {
+                name: "Home",
+                icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>',
+                link: "https://example.com/home",
+                active: true
+            },
+            {
+                name: "Reels",
+                icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>',
+                link: "https://example.com/reels",
+                active: false
+            },
+            {
+                name: "Pages",
+                icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>',
+                link: "https://example.com/pages",
+                active: false
+            },
+            {
+                name: "Professional Dashboard",
+                icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>',
+                link: "https://example.com/dashboard",
+                active: false
+            },
+            {
+                name: "Ads Center",
+                icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>',
+                link: "https://example.com/ads",
+                active: false
+            }
+        ];
+
+        const RIGHT_HEADER_ICONS = [
+            {
+                name: "Menu",
+                icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 8h16V6H4v2zm0 5h16v-2H4v2zm0 5h16v-2H4v2z"/></svg>',
+                link: "https://example.com/menu"
+            },
+            {
+                name: "Messenger",
+                icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.145 2 11.258c0 2.908 1.454 5.495 3.734 7.151.196.142.31.365.304.606l-.047 1.776c-.012.443.435.772.845.603l1.993-.824c.187-.077.397-.06.572.046C10.32 20.124 11.144 20.5 12 20.5c5.523 0 10-4.146 10-9.242C22 6.145 17.523 2 12 2z"/></svg>',
+                link: "https://example.com/messenger"
+            },
+            {
+                name: "Notifications",
+                icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1-1.5-1s-1.5.17-1.5 1v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>',
+                link: "https://example.com/notifications"
+            },
+            {
+                name: "Account",
+                icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>',
+                link: "https://example.com/account"
+            }
+        ];
+
+        const SIDEBAR_ITEMS = [
+            { title: "Professional Dashboard", link: "https://example.com/sb/dashboard", icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>' },
+            { title: "Ads Manager", link: "https://example.com/sb/adsmanager", icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 20h20v-2H2v2zm2-3h16v-2H4v2zm4-3h8v-2H8v2zm4-3h4V8h-4v3z"/></svg>' },
+            { title: "Ads Center", link: "https://example.com/sb/adscenter", icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>' },
+            { title: "Meta AI", link: "https://example.com/sb/metaai", icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>' },
+            { title: "Feeds", link: "https://example.com/sb/feeds", icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.68-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-7v2h14V6H7z"/></svg>' },
+            { title: "Groups", link: "https://example.com/sb/groups", icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>' },
+            { title: "Reels", link: "https://example.com/sb/reels", icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>' },
+            { title: "Memories", link: "https://example.com/sb/memories", icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>' },
+            { title: "Saved", link: "https://example.com/sb/saved", icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H7c-1.1 0-1.99.9-1.99 2L5 21l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>' },
+            { title: "Pages", link: "https://example.com/sb/pages", icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>' },
+            { title: "See More", link: "https://example.com/sb/seemore", icon: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>' }
+        ];
+
+        const SHORTCUT_ITEMS = [
+            { title: "Advanced Frameworks Group", link: "https://example.com/sc/group1", icon: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=80&q=80" },
+            { title: "Blogger Theme Design Co", link: "https://example.com/sc/group2", icon: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=80&q=80" },
+            { title: "Vanilla JavaScript Guild", link: "https://example.com/sc/group3", icon: "https://images.unsplash.com/photo-1579468118864-1b9ea3c0db4a?auto=format&fit=crop&w=80&q=80" }
+        ];
+
+        const CREATOR_BUTTONS = [
+            { name: "Live Video", icon: '<svg fill="#f3425f" viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4zM14 13h-3v3H9v-3H6v-2h3V8h2v3h3v2z"/></svg>', link: "https://example.com/live" },
+            { name: "Photo/Video", icon: '<svg fill="#45bd62" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>', link: "https://example.com/media" },
+            { name: "Reels", icon: '<svg fill="#f7b928" viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8 12.5v-9l6 4.5-6 4.5z"/></svg>', link: "https://example.com/reels/create" }
+        ];
+
+        /* DATA PROFILES GENERATION MATRIX */
+        const PROFILES_COLLECTION = [
+            { id: "p1", name: "Sarah Tech-Lead", image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80", link: "https://example.com/profile/sarah" },
+            { id: "p2", name: "David Architect", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80", link: "https://example.com/profile/david" },
+            { id: "p3", name: "Emma Analytics", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&q=80", link: "https://example.com/profile/emma" },
+            { id: "p4", name: "James Core Solutions", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&q=80", link: "https://example.com/profile/james" },
+            { id: "p5", name: "Sophia Cloud Optimization", image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80", link: "https://example.com/profile/sophia" },
+            { id: "p6", name: "Michael Deployment", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80", link: "https://example.com/profile/michael" },
+            { id: "p7", name: "Olivia Interface Studio", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80", link: "https://example.com/profile/olivia" },
+            { id: "p8", name: "Daniel Logic Layer", image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=150&q=80", link: "https://example.com/profile/daniel" }
+        ];
+
+        /* DATA POSTS GENERATION ARRAY SYSTEM */
+        const POSTS_COLLECTION = [
+            {
+                id: "post_01",
+                profileId: "p1",
+                text: "We are thrilled to announce our major cross-platform application release frameworks for optimized front-end execution routines.",
+                linkText: "[Visit Website]",
+                link: "https://example.com/framework-release",
+                image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80",
+                imageLink: "https://example.com/image-view/1",
+                shareLink: "https://example.com/share/1",
+                likes: "648.73K",
+                comments: "14.2K",
+                shares: "95K",
+                time: "2 hrs ago"
+            },
+            {
+                id: "post_02",
+                profileId: "p2",
+                text: "Database normalization is scaling perfectly across standard cloud infrastructures. Full architecture telemetry report is posted live.",
+                linkText: "[Telemetry Analytics]",
+                link: "https://example.com/telemetry-data",
+                image: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?auto=format&fit=crop&w=800&q=80",
+                imageLink: "https://example.com/image-view/2",
+                shareLink: "https://example.com/share/2",
+                likes: "983.67K",
+                comments: "32.1K",
+                shares: "120K",
+                time: "4 hrs ago"
+            },
+            {
+                id: "post_03",
+                profileId: "p3",
+                text: "Uncovering machine learning trends using clean processing flows. Our data ingestion architecture processing pipeline handles petabytes easily.",
+                linkText: "[Read Whitepaper]",
+                link: "https://example.com/ml-whitepaper",
+                image: "https://images.unsplash.com/photo-1527474305487-b87b222841cc?auto=format&fit=crop&w=800&q=80",
+                imageLink: "https://example.com/image-view/3",
+                shareLink: "https://example.com/share/3",
+                likes: "2.53M",
+                comments: "98.4K",
+                shares: "412K",
+                time: "5 hrs ago"
+            },
+            {
+                id: "post_04",
+                profileId: "p4",
+                text: "Network layer latency profiling indicates a 40% reduction when strict caching rule algorithms are distributed via edge routing nodes.",
+                linkText: "[Edge Metrics]",
+                link: "https://example.com/edge-metrics",
+                image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80",
+                imageLink: "https://example.com/image-view/4",
+                shareLink: "https://example.com/share/4",
+                likes: "929.78M",
+                comments: "5.4M",
+                shares: "2.1M",
+                time: "1 day ago"
+            },
+            {
+                id: "post_05",
+                profileId: "p5",
+                text: "Serverless runtime compute processes can execute heavy computing calculations synchronously when memory buffers are configured correctly.",
+                linkText: "[Compute Specs]",
+                link: "https://example.com/compute-specs",
+                image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
+                imageLink: "https://example.com/image-view/5",
+                shareLink: "https://example.com/share/5",
+                likes: "568K",
+                comments: "11.9K",
+                shares: "43K",
+                time: "2 days ago"
+            },
+            {
+                id: "post_06",
+                profileId: "p6",
+                text: "Automated verification environments ensure flawless application deployments. Clean integration routines are standard operating procedures.",
+                linkText: "[CI-CD Guide]",
+                link: "https://example.com/cicd-guide",
+                image: "https://images.unsplash.com/photo-1618401471353-b98aedd07871?auto=format&fit=crop&w=800&q=80",
+                imageLink: "https://example.com/image-view/6",
+                shareLink: "https://example.com/share/6",
+                likes: "742K",
+                comments: "18.3K",
+                shares: "67K",
+                time: "3 days ago"
+            },
+            {
+                id: "post_07",
+                profileId: "p7",
+                text: "Design token orchestration schemas decouple styling primitives from core UI code components, making structural white-label themes trivial.",
+                linkText: "[Design System]",
+                link: "https://example.com/design-tokens",
+                image: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80",
+                imageLink: "https://example.com/image-view/7",
+                shareLink: "https://example.com/share/7",
+                likes: "1.24M",
+                comments: "45K",
+                shares: "189K",
+                time: "4 days ago"
+            },
+            {
+                id: "post_08",
+                profileId: "p8",
+                text: "Optimizing lower abstract compiler configurations produces optimized bytecode processing blocks which run seamlessly on assembly tiers.",
+                linkText: "[Compiler Logs]",
+                link: "https://example.com/compiler-logs",
+                image: "https://images.unsplash.com/photo-1607799279861-4dd421887fb3?auto=format&fit=crop&w=800&q=80",
+                imageLink: "https://example.com/image-view/8",
+                shareLink: "https://example.com/share/8",
+                likes: "310K",
+                comments: "9.2K",
+                shares: "21K",
+                time: "5 days ago"
+            }
+        ];
+
+        /* STATE MANAGEMENT STORAGE */
+        const APP_STATE = {
+            loadedCount: 0,
+            postsPerStep: 5,
+            searchQuery: "",
+            likedPosts: {},
+            followedProfiles: {}
+        };
+
+        /* PARSE COUNTER TO NUMBER VALUE WITH ACCURATE SUFFIX HANDLING */
+        function parseCounterString(str) {
+            let cleanStr = str.toUpperCase().trim();
+            let hasM = cleanStr.includes('M');
+            let hasK = cleanStr.includes('K');
+            let val = parseFloat(cleanStr.replace(/[KM]/g, ''));
+            
+            if (hasM) return { value: Math.round(val * 1000000), suffix: 'M' };
+            if (hasK) return { value: Math.round(val * 1000), suffix: 'K' };
+            return { value: Math.round(val), suffix: '' };
+        }
+
+        /* FORMAT NUMBER VALUE BACK TO STRING BASED ON ORIGINAL SUFFIX */
+        function formatCounterToString(num, originalSuffix) {
+            if (originalSuffix === 'M') {
+                return (num / 1000000).toFixed(2) + 'M';
+            } else if (originalSuffix === 'K') {
+                return (num / 1000).toFixed(2) + 'K';
+            }
+            return num.toString();
+        }
+
+        /* MODAL WINDOW CONTROLLER UTILITIES */
+        const modalOverlay = document.getElementById("global-modal-overlay");
+        const modalTitle = document.getElementById("global-modal-title");
+        const modalBody = document.getElementById("global-modal-body");
+        const modalClose = document.getElementById("global-modal-close");
+
+        function openGlobalModal(title, textContent, linkText, linkUrl) {
+            modalTitle.textContent = title;
+            modalBody.innerHTML = '';
+            
+            const txtNode = document.createTextNode(textContent + " ");
+            modalBody.appendChild(txtNode);
+            
+            if (linkText && linkUrl) {
+                const aNode = document.createElement("a");
+                aNode.href = linkUrl;
+                aNode.target = "_blank";
+                aNode.textContent = linkText;
+                modalBody.appendChild(aNode);
+            }
+            
+            modalOverlay.classList.add("active");
+            modalClose.focus();
+        }
+
+        function closeGlobalModal() {
+            modalOverlay.classList.remove("active");
+        }
+
+        modalClose.addEventListener("click", closeGlobalModal);
+        modalOverlay.addEventListener("click", function(e) {
+            if (e.target === modalOverlay) closeGlobalModal();
+        });
+        window.addEventListener("keydown", function(e) {
+            if (e.key === "Escape" && modalOverlay.classList.contains("active")) closeGlobalModal();
+        });
+
+        /* RENDER LAYOUT SYSTEM PARTS */
+        function initLayoutSetup() {
+            // Setup Logo
+            const logo = document.getElementById("logo-anchor");
+            logo.href = APP_SETTINGS.logoLink;
+            
+            // Setup Center Nav
+            const centerNav = document.getElementById("center-nav-bar");
+            CENTER_NAVIGATION.forEach(item => {
+                const a = document.createElement("a");
+                a.href = item.link;
+                a.target = "_blank";
+                a.className = "nav-item" + (item.active ? " active" : "");
+                a.setAttribute("data-tooltip", item.name);
+                a.setAttribute("aria-label", item.name);
+                a.innerHTML = item.icon;
+                centerNav.appendChild(a);
+            });
+
+            // Setup Right Icons
+            const rightIcons = document.getElementById("right-utility-icons");
+            RIGHT_HEADER_ICONS.forEach(item => {
+                const a = document.createElement("a");
+                a.href = item.link;
+                a.target = "_blank";
+                a.className = "right-icon-btn";
+                a.setAttribute("data-tooltip", item.name);
+                a.setAttribute("aria-label", item.name);
+                a.innerHTML = item.icon;
+                rightIcons.appendChild(a);
+            });
+
+            // Setup Sidebar Profile
+            const profileNode = document.getElementById("sidebar-profile-node");
+            profileNode.innerHTML = `
+                <a href="${APP_SETTINGS.userProfile.link}" target="_blank" class="sidebar-item">
+                    <div class="sidebar-item-icon">
+                        <img src="${APP_SETTINGS.userProfile.image}" alt="${APP_SETTINGS.userProfile.name}">
+                    </div>
+                    <div>${APP_SETTINGS.userProfile.name}</div>
+                </a>
+            `;
+
+            // Setup Sidebar Menu List Items
+            const menuNode = document.getElementById("sidebar-menu-node");
+            SIDEBAR_ITEMS.forEach(item => {
+                const a = document.createElement("a");
+                a.href = item.link;
+                a.target = "_blank";
+                a.className = "sidebar-item";
+                a.innerHTML = `
+                    <div class="sidebar-item-icon">${item.icon}</div>
+                    <div>${item.title}</div>
+                `;
+                menuNode.appendChild(a);
+            });
+
+            // Setup Shortcuts List
+            const shortcutsNode = document.getElementById("sidebar-shortcuts-node");
+            SHORTCUT_ITEMS.forEach(item => {
+                const a = document.createElement("a");
+                a.href = item.link;
+                a.target = "_blank";
+                a.className = "sidebar-item";
+                a.innerHTML = `
+                    <div class="sidebar-item-icon">
+                        <img src="${item.icon}" alt="${item.title}" loading="lazy">
+                    </div>
+                    <div>${item.title}</div>
+                `;
+                shortcutsNode.appendChild(a);
+            });
+
+            // Setup Contacts List on Right Side
+            const contactsNode = document.getElementById("contacts-listing-node");
+            PROFILES_COLLECTION.forEach(profile => {
+                const a = document.createElement("a");
+                a.href = profile.link;
+                a.target = "_blank";
+                a.className = "sidebar-item";
+                a.innerHTML = `
+                    <div class="sidebar-item-icon">
+                        <img src="${profile.image}" alt="${profile.name}" loading="lazy">
+                    </div>
+                    <div>${profile.name}</div>
+                `;
+                contactsNode.appendChild(a);
+            });
+
+            // Setup Creator Box Data Configuration
+            document.getElementById("creator-avatar-img").src = APP_SETTINGS.userProfile.image;
+            document.getElementById("creator-modal-trigger").textContent = `What's on your mind, ${APP_SETTINGS.userProfile.name.split(' ')[0]}?`;
+            
+            document.getElementById("creator-modal-trigger").addEventListener("click", function() {
+                openGlobalModal("Create Post Platform", APP_SETTINGS.creatorPopupText, APP_SETTINGS.creatorPopupLinkText, APP_SETTINGS.creatorPopupLink);
+            });
+
+            const actionStrip = document.getElementById("creator-action-strip");
+            CREATOR_BUTTONS.forEach(btn => {
+                const a = document.createElement("a");
+                a.href = btn.link;
+                a.target = "_blank";
+                a.className = "creator-btn";
+                a.innerHTML = `${btn.icon}<span>${btn.name}</span>`;
+                actionStrip.appendChild(a);
+            });
+        }
+
+        /* BUILD POST CARD NODE COMPONENT */
+        function buildPostCardNode(post) {
+            const profile = PROFILES_COLLECTION.find(p => p.id === post.profileId) || {
+                name: "Anonymous User",
+                image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80",
+                link: "#"
+            };
+
+            const card = document.createElement("article");
+            card.className = "post-card";
+            card.id = `render_${post.id}`;
+
+            // Header Section Element
+            const header = document.createElement("div");
+            header.className = "post-header";
+
+            const hLeft = document.createElement("div");
+            hLeft.className = "post-header-left";
+
+            const avatarLink = document.createElement("a");
+            avatarLink.href = profile.link;
+            avatarLink.target = "_blank";
+            const avatarImg = document.createElement("img");
+            avatarImg.src = profile.image;
+            avatarImg.alt = profile.name;
+            avatarImg.className = "post-avatar";
+            avatarImg.loading = "lazy";
+            avatarLink.appendChild(avatarImg);
+
+            const meta = document.createElement("div");
+            meta.className = "post-meta";
+            
+            const authorLink = document.createElement("a");
+            authorLink.href = profile.link;
+            authorLink.target = "_blank";
+            authorLink.className = "post-author";
+            authorLink.textContent = profile.name;
+
+            const timeDiv = document.createElement("div");
+            timeDiv.className = "post-time";
+            timeDiv.textContent = post.time;
+
+            meta.appendChild(authorLink);
+            meta.appendChild(timeDiv);
+            hLeft.appendChild(avatarLink);
+            hLeft.appendChild(meta);
+
+            const followBtn = document.createElement("button");
+            followBtn.type = "button";
+            
+            const isFollowed = APP_STATE.followedProfiles[profile.id];
+            followBtn.className = "follow-btn" + (isFollowed ? " followed" : "");
+            followBtn.textContent = isFollowed ? "Followed" : "Follow";
+            followBtn.setAttribute("aria-label", `${isFollowed ? 'Unfollow' : 'Follow'} ${profile.name}`);
+            
+            followBtn.addEventListener("click", function() {
+                if (APP_STATE.followedProfiles[profile.id]) {
+                    APP_STATE.followedProfiles[profile.id] = false;
+                    followBtn.classList.remove("followed");
+                    followBtn.textContent = "Follow";
+                } else {
+                    APP_STATE.followedProfiles[profile.id] = true;
+                    followBtn.classList.add("followed");
+                    followBtn.textContent = "Followed";
+                }
+                syncFollowButtons(profile.id, APP_STATE.followedProfiles[profile.id]);
+            });
+
+            header.appendChild(hLeft);
+            header.appendChild(followBtn);
+
+            // Text Body Layout Element
+            const textContent = document.createElement("div");
+            textContent.className = "post-text";
+            textContent.appendChild(document.createTextNode(post.text + " "));
+            
+            const postLink = document.createElement("a");
+            postLink.href = post.link;
+            postLink.target = "_blank";
+            postLink.className = "post-text-link";
+            postLink.textContent = post.linkText;
+            textContent.appendChild(postLink);
+
+            // Display Image Layer Node
+            const imgContainer = document.createElement("div");
+            imgContainer.className = "post-image-container";
+            
+            const imgLink = document.createElement("a");
+            imgLink.href = post.imageLink;
+            imgLink.target = "_blank";
+            imgLink.style.width = "100%";
+            
+            const img = document.createElement("img");
+            img.src = post.image;
+            img.alt = "Post shared media resource visual description asset";
+            img.className = "post-image";
+            img.loading = "lazy";
+            
+            imgLink.appendChild(img);
+            imgContainer.appendChild(imgLink);
+
+            // Counters Block Line
+            const counters = document.createElement("div");
+            counters.className = "post-counters";
+
+            const cLeft = document.createElement("div");
+            cLeft.className = "counter-left";
+            cLeft.innerHTML = `
+                <svg fill="currentColor" viewBox="0 0 16 16" width="16" height="16" style="color: var(--fb-blue);"><path d="M6.956 1.745C7.021.81 7.908.087 8.864.325l.261.066c.463.116.874.456 1.012.965.22.816.533 2.511.062 4.51a9.84 9.84 0 0 1 .443-.051c.713-.065 1.669-.072 2.516.21.518.173.994.681 1.2 1.273.184.532.16 1.162-.234 1.733.058.119.103.242.138.363.077.27.113.567.113.856 0 .289-.036.586-.113.856-.039.135-.09.273-.16.404.169.387.107.819-.115 1.22a2.007 2.007 0 0 1-.838.777c.194.597.108 1.254-.264 1.742-.371.489-.92.73-1.404.73H8.344c-.76 0-1.43-.376-1.839-1.02-.753-1.185-1.446-2.464-2.133-3.734C3.752 9.07 3.058 8.12 2.353 7.182a1.002 1.002 0 0 1 1.484-1.348l1.325 1.242c.138.13.326.2.522.2h.116l-.027-.33c-.083-.993-.242-2.59-.22-4.043q.003-.09.008-.179z"/></svg>
+                <span id="like-count-label-${post.id}">${post.likes}</span>
+            `;
+
+            const cRight = document.createElement("div");
+            cRight.className = "counter-right";
+            cRight.innerHTML = `
+                <span>${post.comments} comments</span>
+                <span>•</span>
+                <span>${post.shares} shares</span>
+            `;
+
+            counters.appendChild(cLeft);
+            counters.appendChild(cRight);
+
+            // Action Execution Button Footer Grid Tab Container
+            const actions = document.createElement("div");
+            actions.className = "post-actions";
+
+            const likeBtn = document.createElement("button");
+            likeBtn.className = "action-btn" + (APP_STATE.likedPosts[post.id] ? " active" : "");
+            
+            // Like text dynamically matches status
+            const btnText = APP_STATE.likedPosts[post.id] ? "Liked" : "Like";
+            likeBtn.innerHTML = `
+                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                <span id="like-btn-text-${post.id}">${btnText}</span>
+            `;
+            likeBtn.setAttribute("aria-label", `Like this post by ${profile.name}`);
+
+            likeBtn.addEventListener("click", function() {
+                let parsed = parseCounterString(post.likes);
+                let textSpan = document.getElementById(`like-btn-text-${post.id}`);
+                let countSpan = document.getElementById(`like-count-label-${post.id}`);
+                
+                if (APP_STATE.likedPosts[post.id]) {
+                    APP_STATE.likedPosts[post.id] = false;
+                    likeBtn.classList.remove("active");
+                    textSpan.textContent = "Like";
+                    countSpan.textContent = post.likes;
+                } else {
+                    APP_STATE.likedPosts[post.id] = true;
+                    likeBtn.classList.add("active");
+                    textSpan.textContent = "Liked";
+                    
+                    // Increment logic depending on original suffix format
+                    let incrementAmount = 1;
+                    if (parsed.suffix === 'M') incrementAmount = 10000; // Increment 0.01M
+                    if (parsed.suffix === 'K') incrementAmount = 10;    // Increment 0.01K
+                    
+                    let newCount = parsed.value + incrementAmount;
+                    countSpan.textContent = formatCounterToString(newCount, parsed.suffix);
+                }
+            });
+
+            const commentBtn = document.createElement("button");
+            commentBtn.className = "action-btn";
+            commentBtn.innerHTML = `
+                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18zM18 14H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+                <span>Comment</span>
+            `;
+            commentBtn.setAttribute("aria-label", "Open comments dialog framework window panel");
+            commentBtn.addEventListener("click", function() {
+                openGlobalModal("Post Discussion Channel", APP_SETTINGS.commentText, APP_SETTINGS.commentLinkText, APP_SETTINGS.commentLink);
+            });
+
+            const shareBtn = document.createElement("a");
+            shareBtn.href = post.shareLink;
+            shareBtn.target = "_blank";
+            shareBtn.className = "action-btn";
+            shareBtn.innerHTML = `
+                <svg fill="currentColor" viewBox="0 0 24 24"><path d="M10 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
+                <span>Share</span>
+            `;
+            shareBtn.setAttribute("aria-label", "Share this item link onto individual external platform profile timelines");
+
+            actions.appendChild(likeBtn);
+            actions.appendChild(commentBtn);
+            actions.appendChild(shareBtn);
+
+            // Assembly Composition Structure Linkage Pipeline
+            card.appendChild(header);
+            card.appendChild(textContent);
+            card.appendChild(imgContainer);
+            card.appendChild(counters);
+            card.appendChild(actions);
+
+            return card;
+        }
+
+        /* SYNC ALL RENDERED FOLLOW BUTTONS BY ID MATCH */
+        function syncFollowButtons(profileId, newState) {
+            PROFILES_COLLECTION.forEach(p => {
+                if(p.id === profileId) {
+                    const selector = document.querySelectorAll(`.post-card`);
+                    selector.forEach(card => {
+                        const matchedPost = POSTS_COLLECTION.find(pt => pt.id === card.id.replace('render_',''));
+                        if (matchedPost && matchedPost.profileId === profileId) {
+                            const btn = card.querySelector('.follow-btn');
+                            if (btn) {
+                                if (newState) {
+                                    btn.classList.add("followed");
+                                    btn.textContent = "Followed";
+                                } else {
+                                    btn.classList.remove("followed");
+                                    btn.textContent = "Follow";
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        /* GET DATA FILTERED COLLECTION SYSTEM LIST */
+        function getFilteredPosts() {
+            if (!APP_STATE.searchQuery.trim()) {
+                return POSTS_COLLECTION;
+            }
+            const query = APP_STATE.searchQuery.toLowerCase().trim();
+            return POSTS_COLLECTION.filter(post => {
+                const profile = PROFILES_COLLECTION.find(p => p.id === post.profileId);
+                return profile && profile.name.toLowerCase().includes(query);
+            });
+        }
+
+        /* COMPREHENSIVE STREAM REFRESH DISPATCH RUNNER */
+        function renderFeedStream(isAccumulating = false) {
+            const streamContainer = document.getElementById("dynamic-post-stream");
+            const loadMoreBtn = document.getElementById("load-more-action-btn");
+            const filtered = getFilteredPosts();
+
+            if (!isAccumulating) {
+                streamContainer.innerHTML = '';
+                APP_STATE.loadedCount = 0;
+            }
+
+            const targetEndIndex = Math.min(APP_STATE.loadedCount + APP_STATE.postsPerStep, filtered.length);
+            
+            if (filtered.length === 0) {
+                streamContainer.innerHTML = `<div style="text-align:center; padding:32px; color: var(--fb-text-secondary); background: var(--fb-card-bg); border-radius:8px; box-shadow: 0 1px 2px rgba(0,0,0,0.1);">No matches found for "${APP_STATE.searchQuery}"</div>`;
+                loadMoreBtn.style.display = "none";
+                return;
+            }
+
+            for (let i = APP_STATE.loadedCount; i < targetEndIndex; i++) {
+                const postNode = buildPostCardNode(filtered[i]);
+                streamContainer.appendChild(postNode);
+            }
+
+            APP_STATE.loadedCount = targetEndIndex;
+
+            if (APP_STATE.loadedCount >= filtered.length) {
+                loadMoreBtn.style.display = "none";
+            } else {
+                loadMoreBtn.style.display = "block";
+            }
+        }
+
+        /* SEARCH PIPELINE REAL TIME IMPLEMENTATION */
+        const searchInput = document.getElementById("feed-search-input");
+        searchInput.addEventListener("input", function(e) {
+            APP_STATE.searchQuery = e.target.value;
+            renderFeedStream(false);
+        });
+
+        /* LOAD MORE EVENT HANDLER INTERACTION SYSTEM */
+        document.getElementById("load-more-action-btn").addEventListener("click", function() {
+            renderFeedStream(true);
+        });
+
+        /* INVOCATION AND APPLICATION LAUNCH EXECUTION INITIALIZATION STEP */
+        document.addEventListener("DOMContentLoaded", function() {
+            initLayoutSetup();
+            renderFeedStream(false);
+        });
+    </script>
 </body>
 </html>
