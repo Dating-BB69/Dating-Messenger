@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Social Feed Dashboard</title>
     <style>
-        /* CSS RESET & VARIABLES */
-        * {
+        /* CSS RESET & VARIABLES - Isolated for Blogger Context */
+        .social-dashboard-wrapper * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -29,18 +29,21 @@
             --transition-speed: 0.2s;
         }
 
-        body {
+        .social-dashboard-wrapper {
             background-color: var(--fb-bg);
             color: var(--fb-text-primary);
-            overflow-y: scroll;
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
         }
 
-        a {
+        .social-dashboard-wrapper a {
             text-decoration: none;
             color: inherit;
         }
 
-        button {
+        .social-dashboard-wrapper button {
             border: none;
             background: none;
             cursor: pointer;
@@ -48,7 +51,7 @@
         }
 
         /* UTILITIES */
-        .sr-only {
+        .social-dashboard-wrapper .sr-only {
             position: absolute;
             width: 1px;
             height: 1px;
@@ -59,9 +62,9 @@
             border: 0;
         }
 
-        /* HEADER SECTION */
-        .header {
-            position: fixed;
+        /* HEADER SECTION - Absolute bound to component instead of global viewport */
+        .social-dashboard-wrapper .header {
+            position: sticky;
             top: 0;
             left: 0;
             right: 0;
@@ -77,7 +80,7 @@
         }
 
         /* LEFT HEADER */
-        .header-left {
+        .social-dashboard-wrapper .header-left {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -85,7 +88,7 @@
             max-width: 360px;
         }
 
-        .logo {
+        .social-dashboard-wrapper .logo {
             width: 40px;
             height: 40px;
             background-color: var(--fb-blue);
@@ -99,17 +102,17 @@
             transition: background-color var(--transition-speed);
         }
 
-        .logo:hover {
+        .social-dashboard-wrapper .logo:hover {
             background-color: var(--fb-blue-hover);
         }
 
-        .search-container {
+        .social-dashboard-wrapper .search-container {
             position: relative;
             flex: 1;
             max-width: 240px;
         }
 
-        .search-input {
+        .social-dashboard-wrapper .search-input {
             width: 100%;
             height: 40px;
             background-color: var(--fb-bg);
@@ -121,13 +124,13 @@
             transition: background-color var(--transition-speed);
         }
 
-        .search-input:focus {
+        .social-dashboard-wrapper .search-input:focus {
             outline: none;
             background-color: var(--fb-card-bg);
             box-shadow: inset 0 0 0 2px var(--fb-blue);
         }
 
-        .search-icon {
+        .social-dashboard-wrapper .search-icon {
             position: absolute;
             left: 12px;
             top: 50%;
@@ -137,7 +140,7 @@
         }
 
         /* CENTER HEADER */
-        .header-center {
+        .social-dashboard-wrapper .header-center {
             display: flex;
             justify-content: center;
             flex: 1;
@@ -145,7 +148,7 @@
             max-width: 600px;
         }
 
-        .nav-item {
+        .social-dashboard-wrapper .nav-item {
             flex: 1;
             display: flex;
             align-items: center;
@@ -157,14 +160,14 @@
             transition: background-color var(--transition-speed), color var(--transition-speed);
         }
 
-        .nav-item:hover {
+        .social-dashboard-wrapper .nav-item:hover {
             background-color: var(--fb-hover);
             border-radius: 8px;
             margin: 4px 0;
             height: calc(100% - 8px);
         }
 
-        .nav-item.active {
+        .social-dashboard-wrapper .nav-item.active {
             color: var(--fb-blue);
             border-bottom: 3px solid var(--fb-blue);
             border-radius: 0;
@@ -172,13 +175,13 @@
             height: 100%;
         }
 
-        .nav-item svg {
+        .social-dashboard-wrapper .nav-item svg {
             width: 28px;
             height: 28px;
         }
 
         /* RIGHT HEADER */
-        .header-right {
+        .social-dashboard-wrapper .header-right {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -187,7 +190,7 @@
             max-width: 360px;
         }
 
-        .right-icon-btn {
+        .social-dashboard-wrapper .right-icon-btn {
             width: 40px;
             height: 40px;
             background-color: var(--fb-hover);
@@ -200,17 +203,17 @@
             transition: filter var(--transition-speed);
         }
 
-        .right-icon-btn:hover {
+        .social-dashboard-wrapper .right-icon-btn:hover {
             filter: brightness(0.9);
         }
 
-        .right-icon-btn svg {
+        .social-dashboard-wrapper .right-icon-btn svg {
             width: 20px;
             height: 20px;
         }
 
         /* TOOLTIP SYSTEM */
-        [data-tooltip]::after {
+        .social-dashboard-wrapper [data-tooltip]::after {
             content: attr(data-tooltip);
             position: absolute;
             top: calc(100% + 8px);
@@ -229,40 +232,47 @@
             z-index: 1100;
         }
 
-        [data-tooltip]:hover::after {
+        .social-dashboard-wrapper [data-tooltip]:hover::after {
             opacity: 1;
             transform: translateX(-50%) scale(1);
         }
 
-        /* MAIN LAYOUT */
-        .main-container {
-            display: grid;
-            grid-template-columns: 360px 1fr 360px;
-            margin-top: var(--header-height);
+        /* MAIN LAYOUT - Switched from strict grid sizes to flex-fluid blocks */
+        .social-dashboard-wrapper .main-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
             min-height: calc(100vh - var(--header-height));
             position: relative;
+            gap: 16px;
+            padding: 0 8px;
         }
 
-        /* SIDEBARS common */
-        .sidebar {
-            position: fixed;
-            top: var(--header-height);
-            bottom: 0;
-            width: 360px;
+        /* SIDEBARS common - Removed view-port lock (fixed positioning) to fit inside templates */
+        .social-dashboard-wrapper .sidebar {
+            flex: 1;
+            max-width: 280px;
+            min-width: 200px;
+            position: sticky;
+            top: calc(var(--header-height) + 16px);
+            height: calc(100vh - var(--header-height) - 32px);
             overflow-y: auto;
-            padding: 16px 8px;
+            padding: 0 4px;
         }
 
-        .sidebar-left {
-            left: 0;
-        }
-
-        .sidebar-right {
-            right: 0;
+        /* MIDDLE FEED AREA */
+        .social-dashboard-wrapper .feed-container {
+            flex: 2;
+            max-width: 680px;
+            width: 100%;
+            padding: 16px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
         /* SIDEBAR ITEMS */
-        .sidebar-item {
+        .social-dashboard-wrapper .sidebar-item {
             display: flex;
             align-items: center;
             gap: 12px;
@@ -276,11 +286,11 @@
             margin-bottom: 2px;
         }
 
-        .sidebar-item:hover {
+        .social-dashboard-wrapper .sidebar-item:hover {
             background-color: var(--fb-hover);
         }
 
-        .sidebar-item-icon {
+        .social-dashboard-wrapper .sidebar-item-icon {
             width: 36px;
             height: 36px;
             border-radius: 50%;
@@ -292,52 +302,40 @@
             flex-shrink: 0;
         }
 
-        .sidebar-item-icon img {
+        .social-dashboard-wrapper .sidebar-item-icon img {
             width: 36px;
             height: 36px;
             border-radius: 50%;
             object-fit: cover;
         }
 
-        .sidebar-item-icon svg {
+        .social-dashboard-wrapper .sidebar-item-icon svg {
             width: 24px;
             height: 24px;
         }
 
-        .sidebar-separator {
+        .social-dashboard-wrapper .sidebar-separator {
             height: 1px;
             background-color: var(--fb-border);
             margin: 8px 8px;
         }
 
-        .sidebar-heading {
+        .social-dashboard-wrapper .sidebar-heading {
             font-size: 16px;
             font-weight: 600;
             color: var(--fb-text-secondary);
             padding: 8px;
         }
 
-        /* MIDDLE FEED AREA */
-        .feed-container {
-            grid-column: 2;
-            max-width: 680px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 16px 8px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
         /* POST CREATOR CARD */
-        .creator-card {
+        .social-dashboard-wrapper .creator-card {
             background-color: var(--fb-card-bg);
             border-radius: 8px;
             box-shadow: 0 1px 2px rgba(0,0,0,0.1);
             padding: 12px 16px 10px 16px;
         }
 
-        .creator-top {
+        .social-dashboard-wrapper .creator-top {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -345,14 +343,14 @@
             border-bottom: 1px solid var(--fb-border);
         }
 
-        .creator-avatar {
+        .social-dashboard-wrapper .creator-avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
             object-fit: cover;
         }
 
-        .creator-trigger {
+        .social-dashboard-wrapper .creator-trigger {
             flex: 1;
             background-color: var(--fb-bg);
             border-radius: 20px;
@@ -366,17 +364,17 @@
             transition: background-color var(--transition-speed);
         }
 
-        .creator-trigger:hover {
+        .social-dashboard-wrapper .creator-trigger:hover {
             background-color: var(--fb-border);
         }
 
-        .creator-bottom {
+        .social-dashboard-wrapper .creator-bottom {
             display: flex;
             justify-content: space-between;
             padding-top: 8px;
         }
 
-        .creator-btn {
+        .social-dashboard-wrapper .creator-btn {
             flex: 1;
             display: flex;
             align-items: center;
@@ -390,17 +388,17 @@
             transition: background-color var(--transition-speed);
         }
 
-        .creator-btn:hover {
+        .social-dashboard-wrapper .creator-btn:hover {
             background-color: var(--fb-hover);
         }
 
-        .creator-btn svg {
+        .social-dashboard-wrapper .creator-btn svg {
             width: 24px;
             height: 24px;
         }
 
         /* POST CARD */
-        .post-card {
+        .social-dashboard-wrapper .post-card {
             background-color: var(--fb-card-bg);
             border-radius: 8px;
             box-shadow: 0 1px 2px rgba(0,0,0,0.1);
@@ -415,47 +413,43 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .post-header {
+        .social-dashboard-wrapper .post-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 16px 12px 16px;
         }
 
-        .post-header-left {
+        .social-dashboard-wrapper .post-header-left {
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .post-avatar {
+        .social-dashboard-wrapper .post-avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
             object-fit: cover;
         }
 
-        .post-meta {
+        .social-dashboard-wrapper .post-meta {
             display: flex;
             flex-direction: column;
         }
 
-        .post-author {
+        .social-dashboard-wrapper .post-author {
             font-size: 15px;
             font-weight: 600;
             color: var(--fb-text-primary);
         }
 
-        .post-author:hover {
-            text-decoration: none;
-        }
-
-        .post-time {
+        .social-dashboard-wrapper .post-time {
             font-size: 12px;
             color: var(--fb-text-secondary);
         }
 
-        .follow-btn {
+        .social-dashboard-wrapper .follow-btn {
             color: var(--fb-blue);
             font-size: 14px;
             font-weight: 600;
@@ -464,32 +458,28 @@
             transition: background-color var(--transition-speed);
         }
 
-        .follow-btn:hover {
+        .social-dashboard-wrapper .follow-btn:hover {
             background-color: var(--fb-blue-light);
         }
 
-        .follow-btn.followed {
+        .social-dashboard-wrapper .follow-btn.followed {
             color: var(--fb-text-secondary);
             background-color: var(--fb-hover);
         }
 
-        .post-text {
+        .social-dashboard-wrapper .post-text {
             font-size: 15px;
             line-height: 1.4;
             padding: 0 16px 12px 16px;
             color: var(--fb-text-primary);
         }
 
-        .post-text-link {
+        .social-dashboard-wrapper .post-text-link {
             color: var(--fb-blue);
             font-weight: 500;
         }
 
-        .post-text-link:hover {
-            text-underline-position: under;
-        }
-
-        .post-image-container {
+        .social-dashboard-wrapper .post-image-container {
             width: 100%;
             background-color: var(--fb-bg);
             max-height: 500px;
@@ -499,7 +489,7 @@
             overflow: hidden;
         }
 
-        .post-image {
+        .social-dashboard-wrapper .post-image {
             width: 100%;
             height: auto;
             object-fit: cover;
@@ -507,7 +497,7 @@
         }
 
         /* COUNTERS */
-        .post-counters {
+        .social-dashboard-wrapper .post-counters {
             display: flex;
             justify-content: space-between;
             padding: 10px 16px;
@@ -516,21 +506,22 @@
             border-bottom: 1px solid var(--fb-border);
         }
 
-        .counter-left, .counter-right {
+        .social-dashboard-wrapper .counter-left, 
+        .social-dashboard-wrapper .counter-right {
             display: flex;
             align-items: center;
             gap: 4px;
         }
 
         /* POST ACTIONS */
-        .post-actions {
+        .social-dashboard-wrapper .post-actions {
             display: flex;
             justify-content: space-between;
             padding: 4px 16px;
             border-bottom: 1px solid var(--fb-border);
         }
 
-        .action-btn {
+        .social-dashboard-wrapper .action-btn {
             flex: 1;
             display: flex;
             align-items: center;
@@ -544,27 +535,27 @@
             transition: background-color var(--transition-speed);
         }
 
-        .action-btn:hover {
+        .social-dashboard-wrapper .action-btn:hover {
             background-color: var(--fb-hover);
         }
 
-        .action-btn.active {
+        .social-dashboard-wrapper .action-btn.active {
             color: var(--fb-blue);
         }
 
-        .action-btn svg {
+        .social-dashboard-wrapper .action-btn svg {
             width: 20px;
             height: 20px;
         }
 
         /* LOAD MORE SYSTEM */
-        .load-more-container {
+        .social-dashboard-wrapper .load-more-container {
             display: flex;
             justify-content: center;
             padding: 16px 0 32px 0;
         }
 
-        .load-more-btn {
+        .social-dashboard-wrapper .load-more-btn {
             background-color: var(--fb-blue);
             color: white;
             font-size: 15px;
@@ -575,13 +566,13 @@
             transition: background-color var(--transition-speed), transform var(--transition-speed);
         }
 
-        .load-more-btn:hover {
+        .social-dashboard-wrapper .load-more-btn:hover {
             background-color: var(--fb-blue-hover);
             transform: translateY(-1px);
         }
 
         /* MODAL WINDOW SYSTEM */
-        .modal-overlay {
+        .social-dashboard-wrapper .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -597,12 +588,12 @@
             transition: opacity var(--transition-speed) ease;
         }
 
-        .modal-overlay.active {
+        .social-dashboard-wrapper .modal-overlay.active {
             opacity: 1;
             pointer-events: auto;
         }
 
-        .modal-card {
+        .social-dashboard-wrapper .modal-card {
             background-color: var(--fb-card-bg);
             border-radius: 8px;
             box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
@@ -615,11 +606,11 @@
             transition: transform var(--transition-speed) ease;
         }
 
-        .modal-overlay.active .modal-card {
+        .social-dashboard-wrapper .modal-overlay.active .modal-card {
             transform: scale(1);
         }
 
-        .modal-header {
+        .social-dashboard-wrapper .modal-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -627,7 +618,7 @@
             border-bottom: 1px solid var(--fb-border);
         }
 
-        .modal-title {
+        .social-dashboard-wrapper .modal-title {
             font-size: 20px;
             font-weight: 700;
             color: var(--fb-text-primary);
@@ -635,7 +626,7 @@
             flex: 1;
         }
 
-        .modal-close {
+        .social-dashboard-wrapper .modal-close {
             width: 36px;
             height: 36px;
             background-color: var(--fb-hover);
@@ -647,144 +638,147 @@
             transition: filter var(--transition-speed);
         }
 
-        .modal-close:hover {
+        .social-dashboard-wrapper .modal-close:hover {
             filter: brightness(0.9);
         }
 
-        .modal-body {
+        .social-dashboard-wrapper .modal-body {
             padding: 16px;
             font-size: 15px;
             line-height: 1.5;
             color: var(--fb-text-primary);
         }
 
-        .modal-body a {
+        .social-dashboard-wrapper .modal-body a {
             color: var(--fb-blue);
             font-weight: 600;
         }
 
-        .modal-body a:hover {
-            text-underline-position: under;
-        }
-
-        /* SPONSOR & CONTACTS RIGHT SIDEBAR */
-        .right-section {
+        .social-dashboard-wrapper .right-section {
             padding: 8px;
         }
 
-        /* RESPONSIVE DESIGN BREAKPOINTS */
-        @media (max-width: 1260px) {
-            .main-container {
-                grid-template-columns: 280px 1fr;
-            }
-            .sidebar-left {
-                width: 280px;
-            }
-            .sidebar-right {
+        /* UPDATED RESPONSIVE DESIGN FOR BLOGGER POST BOUNDS & MOBILE SCREEN BREAKPOINTS */
+        @media (max-width: 1100px) {
+            .social-dashboard-wrapper .sidebar-right {
                 display: none;
             }
         }
 
-        @media (max-width: 1000px) {
-            .header-center {
+        @media (max-width: 850px) {
+            .social-dashboard-wrapper .sidebar-left {
                 display: none;
             }
-            .main-container {
-                grid-template-columns: 1fr;
-            }
-            .sidebar-left {
+            .social-dashboard-wrapper .header-center {
                 display: none;
-            }
-            .feed-container {
-                grid-column: 1;
             }
         }
 
+        /* Mobile Adjustments - Ensures sidebars are appended gracefully down below feed flow instead of hiding completely if preferred, or scaled within post body */
         @media (max-width: 600px) {
-            .header-right {
+            .social-dashboard-wrapper .header-right {
                 display: none;
             }
-            .search-container {
-                max-width: 160px;
+            .social-dashboard-wrapper .search-container {
+                max-width: 140px;
             }
-            .creator-bottom {
+            .social-dashboard-wrapper .creator-bottom {
                 display: none;
             }
-            .creator-card {
-                padding-bottom: 12px;
+            .social-dashboard-wrapper .main-container {
+                flex-direction: column;
+                padding: 0;
+            }
+            /* Reveal hidden modules sequentially stacked for mobile completeness */
+            .social-dashboard-wrapper .sidebar-left, 
+            .social-dashboard-wrapper .sidebar-right {
+                display: block;
+                max-width: 100%;
+                height: auto;
+                position: static;
+                overflow-y: visible;
+                padding: 16px;
+                background: var(--fb-card-bg);
+                border-radius: 8px;
+                margin-top: 16px;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.1);
             }
         }
     </style>
 </head>
 <body>
 
-    <header class="header">
-        <div class="header-left">
-            <a id="logo-anchor" class="logo" target="_blank" href="#">f</a>
-            <div class="search-container">
-                <span class="search-icon">
-                    <svg fill="currentColor" viewBox="0 0 16 16" width="16" height="16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
-                </span>
-                <input type="text" id="feed-search-input" class="search-input" placeholder="Search by name..." aria-label="Search posts by author profile name">
-            </div>
-        </div>
-
-        <nav class="header-center" id="center-nav-bar" aria-label="Primary Platform Navigation"></nav>
-
-        <div class="header-right" id="right-utility-icons"></div>
-    </header>
-
-    <main class="main-container">
-        <aside class="sidebar sidebar-left" aria-label="Sidebar Navigation Menu">
-            <div id="sidebar-profile-node"></div>
-            <div id="sidebar-menu-node"></div>
-            <div class="sidebar-separator"></div>
-            <div class="sidebar-heading">Your Shortcuts</div>
-            <div id="sidebar-shortcuts-node"></div>
-        </aside>
-
-        <section class="feed-container" aria-label="Social Feed Stream">
-            <div class="creator-card">
-                <div class="creator-top">
-                    <img id="creator-avatar-img" src="" alt="Active User Profile" class="creator-avatar">
-                    <button id="creator-modal-trigger" class="creator-trigger"></button>
+    <div class="social-dashboard-wrapper">
+        
+        <header class="header">
+            <div class="header-left">
+                <a id="logo-anchor" class="logo" target="_blank" href="#">f</a>
+                <div class="search-container">
+                    <span class="search-icon">
+                        <svg fill="currentColor" viewBox="0 0 16 16" width="16" height="16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
+                    </span>
+                    <input type="text" id="feed-search-input" class="search-input" placeholder="Search by name..." aria-label="Search posts by author profile name">
                 </div>
-                <div class="creator-bottom" id="creator-action-strip"></div>
             </div>
 
-            <div id="dynamic-post-stream"></div>
+            <nav class="header-center" id="center-nav-bar" aria-label="Primary Platform Navigation"></nav>
 
-            <div class="load-more-container">
-                <button id="load-more-action-btn" class="load-more-btn">Load More</button>
-            </div>
-        </section>
+            <div class="header-right" id="right-utility-icons"></div>
+        </header>
 
-        <aside class="sidebar sidebar-right" aria-label="Contextual Contacts and Sponsored Feed">
-            <div class="right-section">
-                <div class="sidebar-heading">Sponsored</div>
-                <a href="https://example.com" target="_blank" class="sidebar-item">
-                    <div class="sidebar-item-icon">
-                        <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-                    </div>
-                    <div>Meta Enterprise Architecture Solutions</div>
-                </a>
+        <main class="main-container">
+            <aside class="sidebar sidebar-left" aria-label="Sidebar Navigation Menu">
+                <div id="sidebar-profile-node"></div>
+                <div id="sidebar-menu-node"></div>
                 <div class="sidebar-separator"></div>
-                <div class="sidebar-heading">Contacts</div>
-                <div id="contacts-listing-node"></div>
-            </div>
-        </aside>
-    </main>
+                <div class="sidebar-heading">Your Shortcuts</div>
+                <div id="sidebar-shortcuts-node"></div>
+            </aside>
 
-    <div id="global-modal-overlay" class="modal-overlay" role="dialog" aria-modal="true">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h2 class="modal-title" id="global-modal-title">Modal Notification</h2>
-                <button id="global-modal-close" class="modal-close" aria-label="Close modal window">
-                    <svg fill="currentColor" viewBox="0 0 16 16" width="20" height="20"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>
-                </button>
+            <section class="feed-container" aria-label="Social Feed Stream">
+                <div class="creator-card">
+                    <div class="creator-top">
+                        <img id="creator-avatar-img" src="" alt="Active User Profile" class="creator-avatar">
+                        <button id="creator-modal-trigger" class="creator-trigger"></button>
+                    </div>
+                    <div class="creator-bottom" id="creator-action-strip"></div>
+                </div>
+
+                <div id="dynamic-post-stream"></div>
+
+                <div class="load-more-container">
+                    <button id="load-more-action-btn" class="load-more-btn">Load More</button>
+                </div>
+            </section>
+
+            <aside class="sidebar sidebar-right" aria-label="Contextual Contacts and Sponsored Feed">
+                <div class="right-section">
+                    <div class="sidebar-heading">Sponsored</div>
+                    <a href="https://example.com" target="_blank" class="sidebar-item">
+                        <div class="sidebar-item-icon">
+                            <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                        </div>
+                        <div>Meta Enterprise Architecture Solutions</div>
+                    </a>
+                    <div class="sidebar-separator"></div>
+                    <div class="sidebar-heading">Contacts</div>
+                    <div id="contacts-listing-node"></div>
+                </div>
+            </aside>
+        </main>
+
+        <div id="global-modal-overlay" class="modal-overlay" role="dialog" aria-modal="true">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="global-modal-title">Modal Notification</h2>
+                    <button id="global-modal-close" class="modal-close" aria-label="Close modal window">
+                        <svg fill="currentColor" viewBox="0 0 16 16" width="20" height="20"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>
+                    </button>
+                </div>
+                <div class="modal-body" id="global-modal-body"></div>
             </div>
-            <div class="modal-body" id="global-modal-body"></div>
         </div>
+
     </div>
 
     <script>
@@ -1084,11 +1078,9 @@
 
         /* RENDER LAYOUT SYSTEM PARTS */
         function initLayoutSetup() {
-            // Setup Logo
             const logo = document.getElementById("logo-anchor");
             logo.href = APP_SETTINGS.logoLink;
             
-            // Setup Center Nav
             const centerNav = document.getElementById("center-nav-bar");
             CENTER_NAVIGATION.forEach(item => {
                 const a = document.createElement("a");
@@ -1101,7 +1093,6 @@
                 centerNav.appendChild(a);
             });
 
-            // Setup Right Icons
             const rightIcons = document.getElementById("right-utility-icons");
             RIGHT_HEADER_ICONS.forEach(item => {
                 const a = document.createElement("a");
@@ -1114,7 +1105,6 @@
                 rightIcons.appendChild(a);
             });
 
-            // Setup Sidebar Profile
             const profileNode = document.getElementById("sidebar-profile-node");
             profileNode.innerHTML = `
                 <a href="${APP_SETTINGS.userProfile.link}" target="_blank" class="sidebar-item">
@@ -1125,7 +1115,6 @@
                 </a>
             `;
 
-            // Setup Sidebar Menu List Items
             const menuNode = document.getElementById("sidebar-menu-node");
             SIDEBAR_ITEMS.forEach(item => {
                 const a = document.createElement("a");
@@ -1139,7 +1128,6 @@
                 menuNode.appendChild(a);
             });
 
-            // Setup Shortcuts List
             const shortcutsNode = document.getElementById("sidebar-shortcuts-node");
             SHORTCUT_ITEMS.forEach(item => {
                 const a = document.createElement("a");
@@ -1155,7 +1143,6 @@
                 shortcutsNode.appendChild(a);
             });
 
-            // Setup Contacts List on Right Side
             const contactsNode = document.getElementById("contacts-listing-node");
             PROFILES_COLLECTION.forEach(profile => {
                 const a = document.createElement("a");
@@ -1171,7 +1158,6 @@
                 contactsNode.appendChild(a);
             });
 
-            // Setup Creator Box Data Configuration
             document.getElementById("creator-avatar-img").src = APP_SETTINGS.userProfile.image;
             document.getElementById("creator-modal-trigger").textContent = `What's on your mind, ${APP_SETTINGS.userProfile.name.split(' ')[0]}?`;
             
@@ -1202,7 +1188,6 @@
             card.className = "post-card";
             card.id = `render_${post.id}`;
 
-            // Header Section Element
             const header = document.createElement("div");
             header.className = "post-header";
 
@@ -1261,7 +1246,6 @@
             header.appendChild(hLeft);
             header.appendChild(followBtn);
 
-            // Text Body Layout Element
             const textContent = document.createElement("div");
             textContent.className = "post-text";
             textContent.appendChild(document.createTextNode(post.text + " "));
@@ -1273,7 +1257,6 @@
             postLink.textContent = post.linkText;
             textContent.appendChild(postLink);
 
-            // Display Image Layer Node
             const imgContainer = document.createElement("div");
             imgContainer.className = "post-image-container";
             
@@ -1291,7 +1274,6 @@
             imgLink.appendChild(img);
             imgContainer.appendChild(imgLink);
 
-            // Counters Block Line
             const counters = document.createElement("div");
             counters.className = "post-counters";
 
@@ -1313,14 +1295,12 @@
             counters.appendChild(cLeft);
             counters.appendChild(cRight);
 
-            // Action Execution Button Footer Grid Tab Container
             const actions = document.createElement("div");
             actions.className = "post-actions";
 
             const likeBtn = document.createElement("button");
             likeBtn.className = "action-btn" + (APP_STATE.likedPosts[post.id] ? " active" : "");
             
-            // Like text dynamically matches status
             const btnText = APP_STATE.likedPosts[post.id] ? "Liked" : "Like";
             likeBtn.innerHTML = `
                 <svg fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
@@ -1343,10 +1323,9 @@
                     likeBtn.classList.add("active");
                     textSpan.textContent = "Liked";
                     
-                    // Increment logic depending on original suffix format
                     let incrementAmount = 1;
-                    if (parsed.suffix === 'M') incrementAmount = 10000; // Increment 0.01M
-                    if (parsed.suffix === 'K') incrementAmount = 10;    // Increment 0.01K
+                    if (parsed.suffix === 'M') incrementAmount = 10000;
+                    if (parsed.suffix === 'K') incrementAmount = 10;
                     
                     let newCount = parsed.value + incrementAmount;
                     countSpan.textContent = formatCounterToString(newCount, parsed.suffix);
@@ -1378,7 +1357,6 @@
             actions.appendChild(commentBtn);
             actions.appendChild(shareBtn);
 
-            // Assembly Composition Structure Linkage Pipeline
             card.appendChild(header);
             card.appendChild(textContent);
             card.appendChild(imgContainer);
